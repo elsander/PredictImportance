@@ -1,0 +1,7 @@
+braycurtis <- function(x, y){
+    return(sum(abs(x-y))/sum(abs(x+y)))
+}
+
+jaccard <- function(x, y){
+    return(2*braycurtis(x,y)/(1+braycurtis(x,y)))
+}
