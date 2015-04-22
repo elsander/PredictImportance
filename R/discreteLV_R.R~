@@ -1,9 +1,0 @@
-discreteLV_R <- function(rmat, alphas, n0s,  deltat, simtime){
-    S <- dim(alphas)[1]
-    ns <- matrix(0, S, simtime)
-    ns[,1] <- n0s
-    for(i in 1:(simtime-1)){
-        ns[,i+1] <- ns[,i]*exp(deltat*(rmat[,i] + alphas %*% ns[,i]))
-    }
-    return(ns)
-}

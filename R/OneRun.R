@@ -1,5 +1,5 @@
-OneRun <- function(matname, popname, outfile = NA, seed = NA){
-    if(!is.na(seed)) set.seed(seed)
+OneRun <- function(matname, popname, seed = NULL){
+    set.seed(seed)
     
     ##matrix of alphas
     ## read in, if applicable
@@ -27,7 +27,7 @@ OneRun <- function(matname, popname, outfile = NA, seed = NA){
 
     ## This is the workhorse of the function.
     ## It actually carries out the simulation.
-    ns <- discreteLV_R(rmat, mat, nstars, deltat = .001, simtime)
+    ns <- discreteLV(rmat, mat, nstars, deltat = .001, simtime)
     
     extinctionthreshold <- 10e-06
     nfinals <- ns[,dim(ns)[2]]
@@ -47,7 +47,7 @@ OneRun <- function(matname, popname, outfile = NA, seed = NA){
     for(i in 1:S){
         nfinalstmp <- nfinals
         nfinalstmp[i] <- 0
-        rmNs <- discreteLV_R(rmat2, mat, nfinalstmp, deltat = .0001, simtime)
+        rmNs <- discreteLV(rmat2, mat, nfinalstmp, deltat = .0001, simtime)
         rmMus[,i] <- apply(rmNs[,(simtime/2):simtime], 1, mean)
 
         ##calculate Jaccard distance
@@ -63,16 +63,11 @@ OneRun <- function(matname, popname, outfile = NA, seed = NA){
     matinv <- ginv(diag(nstars, S, S)%*%mat)
     presspert <- colSums(abs(matinv))
 
-    outdata <- rbind(jaccardvals, mus, sigmas, degs,
-                     presspert, Spenser)
+    outdata <- data.frame(Jaccard = jaccardvals,
+                          Perturbation = presspert,
+                          Mean = mus,
+                          Sigma = sigmas,
+                          Degree = degs)
 
-    if(!is.na(outfile)){
-        write.table(outdata, outfile, quote = FALSE,
-                    row.names = FALSE, col.names = FALSE)
-        if(sum(is.na(outfile)) > 0){
-            return(outfile)
-        }
-    } else {
-        return(outdata)
-    }
+    return(outdata)
 }

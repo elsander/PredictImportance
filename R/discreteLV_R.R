@@ -1,4 +1,4 @@
-discreteLV_R <- function(rmat, alphas, n0s,  deltat, simtime){
+discreteLV <- function(rmat, alphas, n0s,  deltat, simtime){
     ## simulate discrete-time Lotka-Volterra time series given:
     ## rmat: a matrix with S (number of species) rows and simtime/deltat cols
     ##       containing the growth rates at each time step (potentially
