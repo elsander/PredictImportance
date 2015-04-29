@@ -4,14 +4,16 @@ Step1_Generate_Networks <- function(web = 'MPN',
                                     seed = NULL,
                                     S = 50,
                                     C = .1,
-                                    GapProb = .25){
+                                    GapProb = .25,
+                                    nwebs = 30,
+                                    nruns = 30){
     ##web type can be "Niche", "NichePlant", "MPN", "Cascade", or "Random"
     
     ##for reproducibility
     set.seed(seed)
 
     system(paste('mkdir', foldname))
-    for(i in 1:30){
+    for(i in 1:nwebs){
         if(web == 'Niche'){
             Adj <- BuildNiche(S = S, C = C)
         } else {
@@ -27,7 +29,7 @@ Step1_Generate_Networks <- function(web = 'MPN',
         }
 
         print(i)
-        for(j in 1:30){
+        for(j in 1:nruns){
             outfile1 <- paste0(path, foldname, '/', foldname,
                                '-web-', i, '-run-', j, '-mat.txt')
             outfile2 <- paste0(path, foldname, '/', foldname,
@@ -41,13 +43,14 @@ Step1_Generate_Networks <- function(web = 'MPN',
 
 Step1_Empirical_Parameterization <- function(webfile,
                                              foldname = webfile,
+                                             nruns = 30,
                                              seed = NULL){
     ## for reproducibility
     set.seed(seed)
 
     system(paste0('mkdir Data/empirical/', foldname))
     Adj <- data.matrix(read.table(webfile, header = FALSE))
-    for(j in 1:30){
+    for(j in 1:nruns){
         outfile1 <- paste0('Data/empirical/', foldname, '/', foldname,
                            '-web-', 1, '-run-', j, '-mat.txt')
         outfile2 <- paste0('Data/empirical/', foldname, '/', foldname,
