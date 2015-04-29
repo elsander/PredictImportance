@@ -1,4 +1,4 @@
-Step4_Hierarchical_Model <- function(datafname,
+Step3_Hierarchical_Model <- function(datafname,
                                      PathToResults = 'Results',
                                      empirical = TRUE){
     ## run hierarchical model

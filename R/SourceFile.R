@@ -1,0 +1,21 @@
+## FOR CODE TESTING ONLY
+
+require(igraph)
+require(MASS)
+require(ggplot2)
+
+source('utilities.R')
+source('BuildCascade.R')
+source('discreteLV_R.R')
+source('jaccard.R')
+source('normalizeM.R')
+source('StoufferZTransform.R')
+source('BuildMPN.R')
+source('GetCentralities.R')
+source('LognormalParam.R')
+source('OneRun.R')
+source('BuildNiche.R')
+source('getTL.R')
+source('multReg.R')
+source('Step1.R')
+source('runScripts.R')
