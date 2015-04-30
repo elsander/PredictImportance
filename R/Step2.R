@@ -19,7 +19,7 @@ Step2_Discrete_LV <- function(path, seed = NULL){
     outfname <- paste0(path, filebase, 'AllData.csv')
 
     for(i in 1:length(matsplit)){
-        if(i%%1 == 0) print(i)
+        print(i)
         matfile <- paste0(path, matsplit[i], 'mat.txt')
         out <- OneRun(matfile,
                       paste0(path, matsplit[i], 'pop.txt'))
@@ -34,7 +34,7 @@ Step2_Discrete_LV <- function(path, seed = NULL){
         centralities <- GetCentralities(matfile)
         
         ## get web and run number
-        tmp <- strsplit(matsplit, '-')
+        tmp <- strsplit(matsplit[i], '-')
         web <- tmp[[1]][3]
         run <- tmp[[1]][5]
         vars <- c('LogOddsJaccard', 'LogPerturbation', 'LogCV', 'LogDegree')
