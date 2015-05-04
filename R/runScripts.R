@@ -1,67 +1,46 @@
-Step4_Hierarchical_Model <- function(datafname,
-                                     PathToResults = 'Results',
-                                     empirical = TRUE){
-    ## run hierarchical model
-    allData <- read.csv(datafname)
-    allData$Run <- as.factor(allData$Run)
-    allData$Web <- as.factor(allData$Web)
-
-    ## extract web name
-    webname <- strsplit(datafname, '/')[[1]]
-    webname <- webname[length(webname)]
-    webname <- strsplit(webname, '-AllData.csv')[[1]][1]
-
-    ## standardize variables
-    toStandardize <- c('LogCV', 'LogDegree', 'LogCloseness',
-                       'LogEigenvector', 'TrophicLevel')
-    empir[,toStandardize] <- apply(empir[,toStandardize],
-                                   2, function(x) return((x-mean(x))/sd(x)))
-    
-    if(empirical == TRUE){
-        model.jacc <- lmer(LogOddsJaccard ~
-                           (-1+LogCV|Run) +
-                           LogDegree +
-                           LogCloseness +
-                           LogEigenvector +
-                           TrophicLevel, data = allData)
-        
-        model.pert <- lmer(LogPerturbation ~
-                           (-1+LogCV|Run) +
-                           LogDegree +
-                           LogCloseness +
-                           LogEigenvector +
-                           TrophicLevel, data = allData)
+runScriptsModel <- function(model = 'Cascade', path = './'){
+    setwd(path)
+    system('mkdir Data')
+    system('mkdir Results')
+    if(model == 'Cascade'){
+        system('mkdir Data/Cascade')
+        Step1_Generate_Networks(web = 'Cascade')
+        fname <- Step2_Discrete_LV(path = 'Data/Cascade')
+        Step3_Hierarchical_Model(fname, empirical = FALSE)
     } else {
-        model.jacc <- lmer(LogOddsJaccard ~
-                           (-1+LogCV|Web:Run) +
-                           (-1+LogDegree|Web) +
-                           (-1+LogCloseness|Web) +
-                           (-1+LogEigenvector|Web) +
-                           (-1+TrophicLevel|Web), data = allData)
-
-        model.pert <- lmer(LogPerturbation ~
-                           (-1+LogCV|Web:Run) +
-                           (-1+LogDegree|Web) +
-                           (-1+LogCloseness|Web) +
-                           (-1+LogEigenvector|Web) +
-                           (-1+TrophicLevel|Web), data = allData)
+        if(model == 'Niche'){
+            system('mkdir Data/Niche')
+            Step1_Generate_Networks(web = 'Niche')
+            fname <- Step2_Discrete_LV(path = 'Data/Niche')
+            Step3_Hierarchical_Model(fname, empirical = FALSE)
+        } else {
+            if(model == 'MPN25'){
+                system('mkdir Data/MPN25')
+                Step1_Generate_Networks(web = 'MPN25')
+                fname <- Step2_Discrete_LV(path = 'Data/MPN25')
+                Step3_Hierarchical_Model(fname, empirical = FALSE)
+            } else {
+                if(model == 'MPN35'){
+                    system('mkdir Data/MPN35')
+                    Step1_Generate_Networks(web = 'MPN35')
+                    fname <- Step2_Discrete_LV(path = 'Data/MPN35')
+                    Step3_Hierarchical_Model(fname, empirical = FALSE)
+                } else {
+                    if(model == 'MPN45'){
+                        system('mkdir Data/MPN45')
+                        Step1_Generate_Networks(web = 'MPN45')
+                        fname <- Step2_Discrete_LV(path = 'Data/MPN45')
+                        Step3_Hierarchical_Model(fname, empirical = FALSE)
+                    } else {
+                        stop('model must be "Cascade", "Niche", "MPN25", "MPN35", or "MPN45"')
+                    }
+                }
+            }
+        }
     }
 
-    write.table(coef(model.jacc)$Run, paste0(PathToResults, webname,
-                                             '-AllCoefficients-Removal.txt'),
-                row.names = FALSE, quote = FALSE)
-    write.table(fixef(model.jacc), paste0(PathToResults, webname,
-                                          '-FixedCoefficients-Removal.txt'),
-                col.names = FALSE, quote = FALSE)
-    save(model.jacc, file = paste0(PathToResults, webname,
-                         '-HierarchicalModel-Removal.RData'))
+}
 
-    write.table(coef(model.pert)$Run, paste0(PathToResults, webname,
-                                             '-AllCoefficients-Perturbation.txt'),
-                row.names = FALSE, quote = FALSE)
-    write.table(fixef(model.pert), paste0(PathToResults, webname,
-                                          '-FixedCoefficients-Perturbation.txt'),
-                col.names = FALSE, quote = FALSE)
-    save(model.pert, file = paste0(PathToResults, webname,
-                         '-HierarchicalModel-Perturbation.RData'))
+runScriptsEmpirical <- function(web = 'All'){
+
 }
