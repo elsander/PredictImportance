@@ -1,3 +1,19 @@
+#' Step 2: Simulate dynamics using discrete-time Lotka-Volterra
+#'
+#' Takes network parameterizations created in Step 1 and simulates community
+#' dynamics using a discrete-time Lotka-Volterra. Transforms variables for
+#' use in hierarchical model (Step 3).
+#'
+#' @param path path to folder where '-mat.txt' and '-pop.txt' files were
+#'   generated in Step 1.
+#' @param seed random seed, for reproducibility
+#'
+#' @return Returns the csv file name where results are stored. This file name
+#'   can then be passed to Step 3. This results file is appended to file
+#'   as the simulations are completed.
+#' 
+#' @export
+
 Step2_Discrete_LV <- function(path, seed = NULL){
     ## for reproducibility
     set.seed(seed)

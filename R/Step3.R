@@ -1,3 +1,18 @@
+#' Step 3: Analyze data using a hierarchical model
+#'
+#' Takes data file created in Step 2 and analyzes the data using a hierarchical model
+#'
+#' @param datafname path to file generated in Step 2 (file name will end
+#'   in '-AllData.csv')
+#' @param PathToResults path to location where results should be stored.
+#' @param empirical flags if the simulated data are based on an empirical
+#' network structure. This will affect the hierarchical model structure
+#'
+#' @return This function does not return an object, but it writes hierarchical
+#'   model output to text files, and saves the entire lmer object to a .RData file
+#' 
+#' @export
+
 Step3_Hierarchical_Model <- function(datafname,
                                      PathToResults = 'Results',
                                      empirical = TRUE){

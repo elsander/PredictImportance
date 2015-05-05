@@ -1,14 +1,38 @@
-Step1_Generate_Networks <- function(web = 'MPN',
+#' Step 1: Generate and/or parameterize Lotka-Volterra communities
+#'
+#' Generates parameterized networks and abundance data that can be
+#' simulated in Step 2.
+#'
+#' @param web Model name ('Cascade', 'Niche', or 'MPN') or empirical network
+#'   name ("caricaie", "otago", "serengeti", "sylt", "ythan", "flensburg",
+#'   "reef", "stmarks", or "tatoosh")
+#' @param foldname Folder name where matrices and abundance vectors should be written
+#' @param path Path where data are kept. 'foldname' will be created as a folder
+#'   here if it does not already exist
+#' @param S Number of species in the generated networks
+#' @param C Network connectance, defined as $\frac{2L}{S(S-1)}$, where L
+#'   is the number of links.
+#' @param GapProb Probability of a gap in a niche. Only used if web == 'MPN'.
+#' @param nwebs Number of random web structures to be generated.
+#' @param nruns Number of parameterizations to be generated.
+#' @param seed Random seed for reproducibility
+#'
+#' @return This function does not return an object, but it writes parameterized
+#'   matrices (with file names ending in '-mat.txt') and vectors of equilibrium
+#'   abundances (with file names ending in '-pop.txt') to the folder path/foldname.
+#' 
+#' @export
+
+Step1_Generate_Networks <- function(web = 'Cascade',
                                     foldname = web,
                                     path = 'Data',
-                                    seed = NULL,
                                     S = 50,
                                     C = .1,
                                     GapProb = .25,
                                     nwebs = 30,
-                                    nruns = 30){
-    ## web type can be "Niche", "NichePlant", "MPN", "Cascade", or "Random"
-    
+                                    nruns = 30,
+                                    seed = NULL
+                                    ){
     ## for reproducibility
     set.seed(seed)
 
@@ -46,16 +70,23 @@ Step1_Generate_Networks <- function(web = 'MPN',
     }
 }
 
-Step1_Empirical_Parameterization <- function(webfile,
+Step1_Empirical_Parameterization <- function(web,
+                                             foldname = web,
+                                             path = 'Data',
                                              nruns = 30,
                                              seed = NULL){
     ## for reproducibility
     set.seed(seed)
 
-    ## get base of webfile name to use for outfile names
-    filebase <- stripFileExtension(webfile)
-    
-    Adj <- data.matrix(read.table(webfile, header = FALSE))
+    attach(webname)
+
+    ## standardize path format
+    if(!hasTrailingSlash(path)){
+        path <- paste0(path, '/')
+    }
+
+    system(paste0('mkdir ', path, foldname))
+    filebase <- paste0(path, foldname, '/', web)
     for(j in 1:nruns){
         outfile1 <- paste0(filebase, '-web-', 1, '-run-', j, '-mat.txt')
         outfile2 <- paste0(filebase, '-web-', 1, '-run-', j, '-pop.txt')

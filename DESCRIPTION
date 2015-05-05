@@ -1,10 +1,16 @@
-Package: PredictImportance
+Package: predictimportance
 Type: Package
-Title: Generate Networks, simulate abundance data, and look at importance correlates
+Title: Generate Networks, Simulate Abundance Data, and Analyze Importance Correlates
 Version: 1.0.0
-Date: 2015-04-14
+Date: 2015-05-05
 Author: Elizabeth Sander and Gyuri Barabas
 Maintainer: Elizabeth Sander <esander@uchicago.edu>
-Description: Generate Networks, simulate abundance data, and look at importance correlates
+Description: Contains all code used to simulate community dynamics and study 
+	     importance correlates in Wootton et al. (in prep).
 License: GPL (>=3)
-Imports: ggplot2, MASS, igraph
+LazyData: true
+Depends: R (>= 3.1.1)
+Imports: ggplot2, 
+	 MASS, 
+	 igraph,
+	 lme4
