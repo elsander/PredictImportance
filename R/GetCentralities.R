@@ -1,3 +1,19 @@
+#' Calculate network metrics for a food web
+#'
+#' Read in a matrix and calculate log closeness centrality,
+#' log eigenvector centrality, and trophic level for each species.
+#' Note that this function is used internally and is not likely to be
+#' useful on its own. Use igraph functionality and getTL() for centrality
+#' calculations beyond replicating simulations from Wootton et al.
+#'
+#' @param matfile path to parameterized nework
+#'
+#' @return a data frame containing log(closeness centrality),
+#' log(eigenvector centrality), and trophic level for each
+#' species in the network.
+#'
+#' @export
+
 GetCentralities <- function(matfile){
     mat <- as.matrix(read.table(matfile, header = FALSE))
     mat <- (mat > 0) * 1 ##convert to adjacency matrix

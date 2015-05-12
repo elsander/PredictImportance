@@ -7,10 +7,10 @@ Author: Elizabeth Sander and Gyuri Barabas
 Maintainer: Elizabeth Sander <esander@uchicago.edu>
 Description: Contains all code used to simulate community dynamics and study 
 	     importance correlates in Wootton et al. (in prep).
-License: GPL (>=3)
+License: GPL (>=3) | file LICENSE
 LazyData: true
-Depends: R (>= 3.1.1)
-Imports: ggplot2, 
+Depends: R (>= 3.1.1),
+	 ggplot2,   
 	 MASS, 
 	 igraph,
 	 lme4

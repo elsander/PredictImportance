@@ -1,23 +1,22 @@
-#' Run all analyses for a model or network
+#' @name runScripts
+#' @aliases runScriptsModel
+#' @aliases runScriptsEmpirical
+#' 
+#' @title Run all analyses for a food web model or network
 #'
 #' Run all data simulation and analysis steps for a given model or
 #' empirical web(s). This may take a while!
 #'
+#' @param path path to where Data and Results folders are or should be created
+#' 
+#' @rdname runScripts
 #' @param model food web model used to construct the network: options are
 #'   'Cascade', 'Niche', 'MPN25', 'MPN35', and 'MPN45'.
-#' @param web empirical network to be parameterized and simulated: options are
-#'   "caricaie", "otago", "serengeti", "sylt", "ythan", "flensburg",
-#'   "reef", "stmarks", and "tatoosh". A vector of network names can be
-#'   provided to simulate more than one network, or web = "All" can be used
-#'   to simulate all networks in the package.
-#' @param path path to where Data and Results folders are or should be created
 #'
 #' @examples
 #' runScriptsModel('Niche')
-#' runScriptsEmpirical('tatoosh')
 #'
 #' @export
-
 
 runScriptsModel <- function(model = 'Cascade', path = './'){
     old <- setwd(tempdir())
@@ -46,6 +45,19 @@ runScriptsModel <- function(model = 'Cascade', path = './'){
     Step3_Hierarchical_Model(fname, empirical = FALSE)
 }
 
+#' @rdname runScripts
+#'
+#' @param web empirical network to be parameterized and simulated: options are
+#'   "caricaie", "otago", "serengeti", "sylt", "ythan", "flensburg",
+#'   "reef", "stmarks", and "tatoosh". A vector of network names can be
+#'   provided to simulate more than one network, or web = "All" can be used
+#'   to simulate all networks in the package.
+#'
+#' @examples
+#' runScriptsEmpirical('tatoosh')
+#'
+#' @export
+
 runScriptsEmpirical <- function(web = 'All', path = './'){
     setwd(path)
     system('mkdir Data')
@@ -62,7 +74,7 @@ runScriptsEmpirical <- function(web = 'All', path = './'){
         nets <- web
     }
 
-    ## run the three steps for each network in the 
+    ## run the three steps for each network in the list
     for(net in nets){
         system(paste0('mkdir Data/', net))
         Step1_Empirical_Parameterization(net)

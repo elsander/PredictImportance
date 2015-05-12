@@ -10,7 +10,7 @@
 #' @param path Path where data are kept. 'foldname' will be created as a folder
 #'   here if it does not already exist
 #' @param S Number of species in the generated networks
-#' @param C Network connectance, defined as $\frac{2L}{S(S-1)}$, where L
+#' @param C Network connectance, defined as 2L/(S(S-1)), where L
 #'   is the number of links.
 #' @param GapProb Probability of a gap in a niche. Only used if web == 'MPN'.
 #' @param nwebs Number of random web structures to be generated.
@@ -78,7 +78,7 @@ Step1_Empirical_Parameterization <- function(web,
     ## for reproducibility
     set.seed(seed)
 
-    attach(webname)
+    data(list = web)
 
     ## standardize path format
     if(!hasTrailingSlash(path)){
@@ -91,7 +91,7 @@ Step1_Empirical_Parameterization <- function(web,
         outfile1 <- paste0(filebase, '-web-', 1, '-run-', j, '-mat.txt')
         outfile2 <- paste0(filebase, '-web-', 1, '-run-', j, '-pop.txt')
         ## parameterize
-        out <- LognormalParam(Adj)
+        out <- LognormalParam(get(web))
         write.table(out$Mat, outfile1, row.names = FALSE, col.names = FALSE)
         write.table(out$Pop, outfile2, row.names = FALSE, col.names = FALSE)
     }

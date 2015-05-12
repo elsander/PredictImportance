@@ -4,9 +4,9 @@
 #' connectance according to the niche model
 #'
 #' @param S Number of species in network; defaults to 50
-#' @param C Network connectance, defined as $\frac{2L}{S(S-1)}$,
+#' @param C Network connectance, defined as 2L/(S(S-1)),
 #'   where L is the number of links. Defaults to .1. The resulting
-#'   matrix will have a connectance of C \pm $2\sqrt{.5C(1-C)S(S-1)}$.
+#'   matrix will have a connectance of C +/- 2sqrt(.5C(1-C)S(S-1)).
 #'
 #' @return M A weakly connected, unsigned adjacency matrix of size (S,S).
 #'

@@ -1,2 +1,2 @@
-\.git/objects/.*
-\.gitignore
+^\.git/objects/.*
+\.gitignore$

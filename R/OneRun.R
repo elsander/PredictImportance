@@ -1,3 +1,22 @@
+#' Simulate Lotka-Volterra population dynamics and get summary stats
+#'
+#' Read in a matrix and population file, simulate discrete-time
+#' population dynamics with perturbed growth rates, and calculate
+#' species importance, variability, and degree. Note that this function
+#' is used internally, and many parameters (simtime, perturbation size)
+#' are hardcoded. Use discreteLV() for your own simulations or
+#' Step2_Discrete_LV() to replicate simulations from Wootton et al.
+#'
+#' @param matname path to parameterized network to be simulated
+#' @param popname path to vector of equilibrium abundances for the network
+#' @param seed random seed for reproducibility
+#'
+#' @return a data frame containing Jaccard distance, perturbation importance,
+#' mean abundance, standard deviation of abundance over the simulation, and
+#' network degree for each species in the network.
+#'
+#' @export
+
 OneRun <- function(matname, popname, seed = NULL){
     set.seed(seed)
     

@@ -3,16 +3,14 @@
 #'
 #' Calculate Bray-Curtis similarity and Jaccard distance between
 #' two real-valued vectors of abundances. Bray-Curtis similarity is
-#' calculated as $\sum{\frac{\abs{\mathbf{x}-\mathbf{y}}}{\abs{\mathbf{x}+\mathbf{y}}}}$
-#' and Jaccard similarity is calculated as $2\frac{BC}{1+BC}$, where BC
+#' calculated as sum(|x-y|/|x+y|), where x and y are real-valued vectors.
+#' and Jaccard similarity is calculated as 2BC/(1+BC), where BC
 #' is the Bray-Curtis similarity.
 #'
 #' @param x A vector of species abundances.
 #' @param y A second vector of abundances, with the same length as x.
 #'
 #' @return The similarity or distance between the two abundance vectors.
-#'
-#' @references
 #'
 #' @export
 

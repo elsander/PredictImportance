@@ -1,0 +1,3 @@
+FullSimulationEmpirical Demo Parameterizes empirical networks, runs hierarchical models, and plots results as in Wootton et al.
+
+FullSimulationModels Demo Generates and parameterizes food web model networks, runs hierarchical models, and plots results as in Wootton et al. (see supplementary material).
