@@ -61,7 +61,6 @@ runScriptsModel <- function(model = 'Cascade', path = './'){
 runScriptsEmpirical <- function(web = 'All', path = './'){
     setwd(path)
     system('mkdir Data')
-    system('mkdir Data/')
     system('mkdir Results')
     nets <- c('caricaie', 'otago', 'serengeti', 'sylt', 'ythan',
               'flensburg', 'reef', 'stmarks', 'tatoosh')

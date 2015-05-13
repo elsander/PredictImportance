@@ -91,7 +91,7 @@ Step1_Empirical_Parameterization <- function(web,
         outfile1 <- paste0(filebase, '-web-', 1, '-run-', j, '-mat.txt')
         outfile2 <- paste0(filebase, '-web-', 1, '-run-', j, '-pop.txt')
         ## parameterize
-        out <- LognormalParam(get(web))
+        out <- LognormalParam(as.matrix(get(web)))
         write.table(out$Mat, outfile1, row.names = FALSE, col.names = FALSE)
         write.table(out$Pop, outfile2, row.names = FALSE, col.names = FALSE)
     }
