@@ -4,14 +4,12 @@
 \alias{OneRun}
 \title{Simulate Lotka-Volterra population dynamics and get summary stats}
 \usage{
-OneRun(matname, popname, seed = NULL)
+OneRun(matname, popname)
 }
 \arguments{
 \item{matname}{path to parameterized network to be simulated}
 
 \item{popname}{path to vector of equilibrium abundances for the network}
-
-\item{seed}{random seed for reproducibility}
 }
 \value{
 a data frame containing Jaccard distance, perturbation importance,

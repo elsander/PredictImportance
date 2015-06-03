@@ -14,17 +14,20 @@
 #'   'Cascade', 'Niche', 'MPN25', 'MPN35', and 'MPN45'.
 #'
 #' @examples
+#' \dontrun{
 #' runScriptsModel('Niche')
+#' }
 #'
 #' @export
 
 runScriptsModel <- function(model = 'Cascade', path = './'){
-    old <- setwd(tempdir())
+    old <- getwd()
     on.exit(setwd(old), add = TRUE)
     
     setwd(path)
     system('mkdir Data')
     system('mkdir Results')
+    print(getwd())
     
     if(!(model %in% c('Cascade', 'Niche', 'MPN25', 'MPN35', 'MPN45')) ||
        length(model) > 1){
@@ -37,10 +40,12 @@ runScriptsModel <- function(model = 'Cascade', path = './'){
     GapProb <- .25
     if(model %in% c('MPN25', 'MPN35', 'MPN45')){
         GapProb <- as.numeric(strsplit(model, 'MPN')[[1]][2])/100
-        model <- 'MPN'
+        model2 <- 'MPN'
+    } else {
+        model2 <- model
     }
         
-    Step1_Generate_Networks(web = model, GapProb = GapProb)
+    Step1_Generate_Networks(web = model2, GapProb = GapProb)
     fname <- Step2_Discrete_LV(path = paste0('Data/', model))
     Step3_Hierarchical_Model(fname, empirical = FALSE)
 }
@@ -54,7 +59,9 @@ runScriptsModel <- function(model = 'Cascade', path = './'){
 #'   to simulate all networks in the package.
 #'
 #' @examples
+#' \dontrun{
 #' runScriptsEmpirical('tatoosh')
+#' }
 #'
 #' @export
 

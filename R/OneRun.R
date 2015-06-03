@@ -9,7 +9,6 @@
 #'
 #' @param matname path to parameterized network to be simulated
 #' @param popname path to vector of equilibrium abundances for the network
-#' @param seed random seed for reproducibility
 #'
 #' @return a data frame containing Jaccard distance, perturbation importance,
 #' mean abundance, standard deviation of abundance over the simulation, and
@@ -17,9 +16,7 @@
 #'
 #' @export
 
-OneRun <- function(matname, popname, seed = NULL){
-    set.seed(seed)
-    
+OneRun <- function(matname, popname){
     ##matrix of alphas
     ## read in, if applicable
     if(is.character(matname)){
@@ -79,7 +76,7 @@ OneRun <- function(matname, popname, seed = NULL){
     adj <- (mat > 0)*1
     degs <- rowSums(adj) + colSums(adj)
 
-    matinv <- ginv(diag(nstars, S, S)%*%mat)
+    matinv <- solve(diag(nstars, S, S)%*%mat)
     presspert <- colSums(abs(matinv))
 
     outdata <- data.frame(Jaccard = jaccardvals,

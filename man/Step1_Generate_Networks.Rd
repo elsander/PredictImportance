@@ -13,7 +13,8 @@ Step1_Generate_Networks(web = "Cascade", foldname = web, path = "Data",
 name ("caricaie", "otago", "serengeti", "sylt", "ythan", "flensburg",
 "reef", "stmarks", or "tatoosh")}
 
-\item{foldname}{Folder name where matrices and abundance vectors should be written}
+\item{foldname}{Folder name where matrices and abundance vectors should
+be written}
 
 \item{path}{Path where data are kept. 'foldname' will be created as a folder
 here if it does not already exist}
@@ -34,7 +35,8 @@ is the number of links.}
 \value{
 This function does not return an object, but it writes parameterized
   matrices (with file names ending in '-mat.txt') and vectors of equilibrium
-  abundances (with file names ending in '-pop.txt') to the folder path/foldname.
+  abundances (with file names ending in '-pop.txt') to the folder
+  path/foldname.
 }
 \description{
 Generates parameterized networks and abundance data that can be

@@ -15,9 +15,6 @@
 #' @export
 
 Step2_Discrete_LV <- function(path, seed = NULL){
-    ## for reproducibility
-    set.seed(seed)
-    
     fs <- list.files(path)
     inds <- grep('*mat.txt', fs)
     matfs <- fs[inds]
@@ -39,7 +36,7 @@ Step2_Discrete_LV <- function(path, seed = NULL){
         matfile <- paste0(path, matsplit[i], 'mat.txt')
         out <- OneRun(matfile,
                       paste0(path, matsplit[i], 'pop.txt'))
-
+        
         ## transform variables
         out$LogOddsJaccard <- log(out$Jaccard/(1-out$Jaccard))
         out$LogPerturbation <- log(out$Perturbation)

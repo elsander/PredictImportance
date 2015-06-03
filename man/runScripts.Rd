@@ -32,7 +32,11 @@ Run all data simulation and analysis steps for a given model or
 empirical web(s). This may take a while!
 }
 \examples{
+\dontrun{
 runScriptsModel('Niche')
+}
+\dontrun{
 runScriptsEmpirical('tatoosh')
+}
 }
 

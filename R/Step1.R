@@ -6,7 +6,8 @@
 #' @param web Model name ('Cascade', 'Niche', or 'MPN') or empirical network
 #'   name ("caricaie", "otago", "serengeti", "sylt", "ythan", "flensburg",
 #'   "reef", "stmarks", or "tatoosh")
-#' @param foldname Folder name where matrices and abundance vectors should be written
+#' @param foldname Folder name where matrices and abundance vectors should
+#'   be written
 #' @param path Path where data are kept. 'foldname' will be created as a folder
 #'   here if it does not already exist
 #' @param S Number of species in the generated networks
@@ -19,7 +20,8 @@
 #'
 #' @return This function does not return an object, but it writes parameterized
 #'   matrices (with file names ending in '-mat.txt') and vectors of equilibrium
-#'   abundances (with file names ending in '-pop.txt') to the folder path/foldname.
+#'   abundances (with file names ending in '-pop.txt') to the folder
+#'   path/foldname.
 #' 
 #' @export
 
@@ -33,6 +35,12 @@ Step1_Generate_Networks <- function(web = 'Cascade',
                                     nruns = 30,
                                     seed = NULL
                                     ){
+
+    ## change folder name to include gap prob if appropriate
+    if(web == 'MPN' && foldname == web){
+        foldname <- paste0(web, GapProb*100)
+    }
+    
     ## for reproducibility
     set.seed(seed)
 

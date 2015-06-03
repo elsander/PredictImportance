@@ -26,10 +26,14 @@ Step3_Hierarchical_Model <- function(datafname,
     webname <- webname[length(webname)]
     webname <- strsplit(webname, '-AllData.csv')[[1]][1]
 
+    ## add webname directory in Results if it doesn't exist already
+    system(paste0('mkdir ', PathToResults, '/', webname))
+
     ## add slash to path if necessary
     if (!hasTrailingSlash(PathToResults)){
         PathToResults <- paste0(PathToResults, '/')
     }
+    PathToResults <- paste0(PathToResults, webname, '/')
     
     ## standardize variables
     toStandardize <- c('LogCV', 'LogDegree', 'LogCloseness',
