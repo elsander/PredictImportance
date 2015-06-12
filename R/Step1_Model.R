@@ -1,11 +1,9 @@
-#' Step 1: Generate and/or parameterize Lotka-Volterra communities
+#' Step 1: Generate and parameterize Food Web Model Lotka-Volterra communities
 #'
 #' Generates parameterized networks and abundance data that can be
 #' simulated in Step 2.
 #'
-#' @param web Model name ('Cascade', 'Niche', or 'MPN') or empirical network
-#'   name ("caricaie", "otago", "serengeti", "sylt", "ythan", "flensburg",
-#'   "reef", "stmarks", or "tatoosh")
+#' @param web Model name ('Cascade', 'Niche', or 'MPN')
 #' @param foldname Folder name where matrices and abundance vectors should
 #'   be written
 #' @param path Path where data are kept. 'foldname' will be created as a folder
@@ -75,32 +73,5 @@ Step1_Generate_Networks <- function(web = 'Cascade',
             write.table(out$Mat, outfile1, row.names = FALSE, col.names = FALSE)
             write.table(out$Pop, outfile2, row.names = FALSE, col.names = FALSE)
         }
-    }
-}
-
-Step1_Empirical_Parameterization <- function(web,
-                                             foldname = web,
-                                             path = 'Data',
-                                             nruns = 30,
-                                             seed = NULL){
-    ## for reproducibility
-    set.seed(seed)
-
-    data(list = web)
-
-    ## standardize path format
-    if(!hasTrailingSlash(path)){
-        path <- paste0(path, '/')
-    }
-
-    system(paste0('mkdir ', path, foldname))
-    filebase <- paste0(path, foldname, '/', web)
-    for(j in 1:nruns){
-        outfile1 <- paste0(filebase, '-web-', 1, '-run-', j, '-mat.txt')
-        outfile2 <- paste0(filebase, '-web-', 1, '-run-', j, '-pop.txt')
-        ## parameterize
-        out <- LognormalParam(as.matrix(get(web)))
-        write.table(out$Mat, outfile1, row.names = FALSE, col.names = FALSE)
-        write.table(out$Pop, outfile2, row.names = FALSE, col.names = FALSE)
     }
 }
