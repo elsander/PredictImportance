@@ -17,6 +17,14 @@ hasTrailingSlash <- function(mystring){
     }
 }
 
+addTrailingSlash <- function(mystring){
+    if(hasTrailingSlash(mystring)){
+        return(mystring)
+    } else {
+        return(paste0(mystring, '/'))
+    }
+}
+
 stripFileExtension <- function(filepath){
     ## remove the final file extension from filepath
     split <- strsplit(filepath, '\\.', perl = TRUE)[[1]]
@@ -27,3 +35,4 @@ stripFileExtension <- function(filepath){
     }
     return(file)
 }
+
