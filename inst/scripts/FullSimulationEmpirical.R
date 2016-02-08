@@ -103,9 +103,11 @@ EmpiricalViolins <- function(pathToResults){
     dev.off()
 }
 
-readline('This code will generate figures, data, and model results in the current directory. Simulation and analysis for all empirical networks will run. This may take multiplehours or days! Press any key to continue:')
+FullSimulationEmpirical <- function(){
+    readline('This code will generate figures, data, and model results in the current directory. Simulation and analysis for all empirical networks will run. This may take multiplehours or days! Press any key to continue:')
 
-runScriptsEmpirical(web = 'All', path = './')
+    runScriptsEmpirical(web = 'All', path = './')
 
-print('Generating violin plots from empirical results')
-EmpiricalViolins('Results')
+    print('Generating violin plots from empirical results')
+    EmpiricalViolins('Results')
+}

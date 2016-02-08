@@ -134,22 +134,24 @@ SimulatedViolins <- function(pathToResults){
     dev.off()
 }
 
-readline('This code will generate figures, data, and model results in the current directory. This is likely to take several days! Press any key to continue:')
+FullSimulationModels <- function(){
+    readline('This code will generate figures, data, and model results in the current directory. This is likely to take several days! Press any key to continue:')
 
-runScriptsModel(model = 'Cascade')
-print('Cascade complete')
+    runScriptsModel(model = 'Cascade')
+    print('Cascade complete')
 
-runScriptsModel(model = 'Niche')
-print('Niche complete')
+    runScriptsModel(model = 'Niche')
+    print('Niche complete')
 
-runScriptsModel(model = 'MPN25')
-print('MPN25 complete')
+    runScriptsModel(model = 'MPN25')
+    print('MPN25 complete')
 
-runScriptsModel(model = 'MPN35')
-print('MPN35 complete')
+    runScriptsModel(model = 'MPN35')
+    print('MPN35 complete')
 
-runScriptsModel(model = 'MPN45')
-print('MPN45 complete')
+    runScriptsModel(model = 'MPN45')
+    print('MPN45 complete')
 
-print('Generating violin plots from all results')
-SimulatedViolins('Results')
+    print('Generating violin plots from all results')
+    SimulatedViolins('Results')
+}

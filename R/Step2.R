@@ -50,7 +50,8 @@ Step2_Discrete_LV <- function(path, seed = NULL){
         tmp <- strsplit(matsplit[i], '-')
         web <- tmp[[1]][3]
         run <- tmp[[1]][5]
-        vars <- c('LogOddsJaccard', 'LogPerturbation', 'LogCV', 'LogDegree')
+        vars <- c('LogOddsJaccard', 'LogPerturbation', 'LogCV', 'LogDegree',
+                  'Mean', 'Sigma')
         allData <- data.frame(Web = rep(web, nrow(out)),
                               Run = rep(run, nrow(out)),
                               out[,vars],

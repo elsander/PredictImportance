@@ -16,7 +16,7 @@
 #'
 #' @export
 
-OneRun <- function(matname, popname){
+OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     ##matrix of alphas
     ## read in, if applicable
     if(is.character(matname)){
@@ -36,14 +36,13 @@ OneRun <- function(matname, popname){
     }
     r0s <- (-mat)%*%nstars
 
-    simtime <- 10000
     rmat <- matrix(r0s, S, simtime)
     ##add external forcing
     rmat <- rmat + matrix(rnorm(S*simtime, mean = 0, sd = .01), S, simtime)
 
     ## This is the workhorse of the function.
     ## It actually carries out the simulation.
-    ns <- discreteLV(rmat, mat, nstars, deltat = .001, simtime)
+    ns <- discreteLV(rmat, mat, nstars, deltat = deltat, simtime)
     
     extinctionthreshold <- 10e-06
     nfinals <- ns[,dim(ns)[2]]
@@ -63,7 +62,7 @@ OneRun <- function(matname, popname){
     for(i in 1:S){
         nfinalstmp <- nfinals
         nfinalstmp[i] <- 0
-        rmNs <- discreteLV(rmat2, mat, nfinalstmp, deltat = .0001, simtime)
+        rmNs <- discreteLV(rmat2, mat, nfinalstmp, deltat = deltat, simtime)
         rmMus[,i] <- apply(rmNs[,(simtime/2):simtime], 1, mean)
 
         ##calculate Jaccard distance
