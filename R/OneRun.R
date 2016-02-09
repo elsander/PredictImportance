@@ -17,6 +17,10 @@
 #' @export
 
 OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
+    ## hardcoded jaccard simtime and burn-in
+    jaccardSimtime <- 500
+    burnIn <- 300
+    
     ##matrix of alphas
     ## read in, if applicable
     if(is.character(matname)){
@@ -56,14 +60,15 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     ##remove each species to calculate effect on community
     rmMus <- matrix(0, S, S)
     jaccardvals <- rep(0, S)
-    simtime <- simtime*10
     ##external forcing for jaccard distance calculation
-    rmat2 <- matrix(r0s, S, simtime) + matrix(rnorm(S*simtime, mean = 0, sd = .01), S, simtime)
+    rmat2 <- matrix(r0s, S, jaccardSimtime) +
+        matrix(rnorm(S*jaccardSimtime, mean = 0, sd = .01), S, jaccardSimtime)
     for(i in 1:S){
         nfinalstmp <- nfinals
         nfinalstmp[i] <- 0
-        rmNs <- discreteLV(rmat2, mat, nfinalstmp, deltat = deltat, simtime)
-        rmMus[,i] <- apply(rmNs[,(simtime/2):simtime], 1, mean)
+        rmNs <- discreteLV(rmat2, mat, nfinalstmp, deltat = deltat, jaccardSimtime)
+        rmNs[rmNs < extinctionthreshold] <- 0
+        rmMus[,i] <- apply(rmNs[,burnIn:jaccardSimtime], 1, mean)
 
         ##calculate Jaccard distance
         tmpmu <- mus

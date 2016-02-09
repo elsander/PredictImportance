@@ -17,13 +17,16 @@
 
 discreteLV <- function(rmat, alphas, n0s, deltat, simtime){
     S <- dim(alphas)[1]
-    ns <- matrix(0, S, ceiling(simtime/deltat))
-    ns[,1] <- n0s
+    ## we only want to keep each integer time point
+    ns <- matrix(0, S, simtime)
+    ## we keep intermediate time step abundances here
+    ntmp <- n0s
     for(i in 1:simtime){
-        for(j in 1:ceiling(1/deltat)){
-            if(i == simtime & j == ceiling(1/deltat)) break
-            ns[,(i*j)+1] <- ns[,i]*exp(deltat*(rmat[,i] + alphas %*% ns[,i*j]))
+        ns[,i] <- ntmp
+        for(j in seq(i, i+1, by = deltat)){
+            ntmp <- ntmp*exp(deltat*(rmat[,i] + alphas %*% ntmp))
         }
     }
+    ns[,ncol(i)] <- ntmp
     return(ns)
 }
