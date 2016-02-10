@@ -20,6 +20,8 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     ## hardcoded jaccard simtime and burn-in
     jaccardSimtime <- 500
     burnIn <- 300
+    errMean <- 0
+    errSD <- .01
     
     ##matrix of alphas
     ## read in, if applicable
@@ -40,13 +42,18 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     }
     r0s <- (-mat)%*%nstars
 
-    rmat <- matrix(r0s, S, simtime)
-    ##add external forcing
-    rmat <- rmat + matrix(rnorm(S*simtime, mean = 0, sd = .01), S, simtime)
-
+    rlist <- as.list(r0s)
+    rspline <- lapply(rlist,
+                      function(r, S, simtime, errMean, errSD){
+        rvec <- rep(r, S) + rnorm(S, errMean, errSD)
+        forces <- smooth.spline(seq(from = 0, to = simtime, len = S),
+                                rvec, spar = 0)
+        return(forces)
+        }, S = S, simtime = simtime, errMean = errMean, errSD = errSD)
+    
     ## This is the workhorse of the function.
     ## It actually carries out the simulation.
-    ns <- discreteLV(rmat, mat, nstars, deltat = deltat, simtime)
+    ns <- discreteLV(rspline, mat, nstars, deltat = deltat, simtime)
     
     extinctionthreshold <- 10e-06
     nfinals <- ns[,dim(ns)[2]]
@@ -61,12 +68,17 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     rmMus <- matrix(0, S, S)
     jaccardvals <- rep(0, S)
     ##external forcing for jaccard distance calculation
-    rmat2 <- matrix(r0s, S, jaccardSimtime) +
-        matrix(rnorm(S*jaccardSimtime, mean = 0, sd = .01), S, jaccardSimtime)
+    rspline2 <- lapply(rlist,
+                      function(r, S, simtime, errMean, errSD){
+        rvec <- rep(r, S) + rnorm(S, errMean, errSD)
+        forces <- smooth.spline(seq(from = 0, to = simtime, len = S),
+                                rvec, spar = 0)
+        return(forces)
+        }, S = S, simtime = jaccardSimtime, errMean = errMean, errSD = errSD)
     for(i in 1:S){
-        nfinalstmp <- nfinals
-        nfinalstmp[i] <- 0
-        rmNs <- discreteLV(rmat2, mat, nfinalstmp, deltat = deltat, jaccardSimtime)
+        nstarstmp <- nstars
+        nstarstmp[i] <- 0
+        rmNs <- discreteLV(rspline2, mat, nstarstmp, deltat = deltat, jaccardSimtime)
         rmNs[rmNs < extinctionthreshold] <- 0
         rmMus[,i] <- apply(rmNs[,burnIn:jaccardSimtime], 1, mean)
 

@@ -3,9 +3,8 @@
 #' Simulate discrete-time Lotka-Volterra population dynamics
 #' with perturbed growth rates
 #'
-#' @param rmat a matrix with S (number of species) rows and simtime
-#' cols containing the growth rates at each time step (potentially
-#' perturbed at each time step) 
+#' @param rmat a list of length S, containing splined forcing functions for
+#' each species
 #' @param alphas an S by S matrix of per capita interaction strengths
 #' @param n0s a vector of length S containing species abundances
 #' @param deltat the size of the time step
@@ -15,18 +14,27 @@
 #'
 #' @export
 
-discreteLV <- function(rmat, alphas, n0s, deltat, simtime){
+discreteLV <- function(rspline, alphas, n0s, deltat, simtime){
     S <- dim(alphas)[1]
     ## we only want to keep each integer time point
     ns <- matrix(0, S, simtime)
+    ## convert splining functions to actual values
+    rmat <- matrix(0, S, (simtime - 1)/deltat +1)
+    for(i in 1:S){
+        rmat[i,] <- predict(rspline[[i]], seq(1, simtime, by = deltat))$y
+    }
     ## we keep intermediate time step abundances here
     ntmp <- n0s
-    for(i in 1:simtime){
+    k <- 1
+    for(i in 1:(simtime-1)){
         ns[,i] <- ntmp
-        for(j in seq(i, i+1, by = deltat)){
-            ntmp <- ntmp*exp(deltat*(rmat[,i] + alphas %*% ntmp))
+        for(j in seq(i, i+1-deltat, by = deltat)){
+            if(k > ncol(rmat)) browser()
+            ntmp <- ntmp*exp(deltat*(rmat[,k] + alphas %*% ntmp))
+            k <- k + 1
         }
     }
-    ns[,ncol(i)] <- ntmp
+    ## fill in final abundance
+    ns[,ncol(ns)] <- ntmp
     return(ns)
 }
