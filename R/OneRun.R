@@ -67,7 +67,7 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     rmat2 <- matrix(r0s, S, jaccardSimtime) +
         matrix(rnorm(S*jaccardSimtime, mean = 0, sd = .01), S, jaccardSimtime)
     for(i in 1:S){
-        nfinalstmp <- nfinals
+        nfinalstmp <- nstars
         nfinalstmp[i] <- 0
         rmNs <- discreteLV_C(rmat2, mat, nfinalstmp, deltat, jaccardSimtime)
         rmNs[rmNs < extinctionthreshold] <- 0
