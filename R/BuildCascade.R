@@ -39,8 +39,8 @@ BuildCascade <- function(S = 50, C = .1){
         ## (2) graph is weakly connected
         ## if these are met, return the network
         if (abs(sum(M) - DesiredL) < CutOff){
-            g <- graph.adjacency(M)
-            if (is.connected(g, "weak")){
+            g <- igraph::graph.adjacency(M)
+            if (igraph::is.connected(g, "weak")){
                 Success <- TRUE
             }
         } 

@@ -4,12 +4,17 @@
 \alias{OneRun}
 \title{Simulate Lotka-Volterra population dynamics and get summary stats}
 \usage{
-OneRun(matname, popname)
+OneRun(matname, popname, simtime = 1000, deltat = 0.001)
 }
 \arguments{
 \item{matname}{path to parameterized network to be simulated}
 
 \item{popname}{path to vector of equilibrium abundances for the network}
+
+\item{simtime}{number of time steps to simulate}
+
+\item{deltat}{step size for simulation (smaller value will allow the model to
+more closely approximate a continuous-time Lotka-Volterra)}
 }
 \value{
 a data frame containing Jaccard distance, perturbation importance,
@@ -21,7 +26,7 @@ Read in a matrix and population file, simulate discrete-time
 population dynamics with perturbed growth rates, and calculate
 species importance, variability, and degree. Note that this function
 is used internally, and many parameters (simtime, perturbation size)
-are hardcoded. Use discreteLV() for your own simulations or
+are hardcoded. Use discreteLV_C() for your own simulations or
 Step2_Discrete_LV() to replicate simulations from Wootton et al.
 }
 

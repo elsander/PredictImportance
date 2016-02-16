@@ -4,11 +4,14 @@
 #' population dynamics with perturbed growth rates, and calculate
 #' species importance, variability, and degree. Note that this function
 #' is used internally, and many parameters (simtime, perturbation size)
-#' are hardcoded. Use discreteLV() for your own simulations or
+#' are hardcoded. Use discreteLV_C() for your own simulations or
 #' Step2_Discrete_LV() to replicate simulations from Wootton et al.
 #'
 #' @param matname path to parameterized network to be simulated
 #' @param popname path to vector of equilibrium abundances for the network
+#' @param simtime number of time steps to simulate
+#' @param deltat step size for simulation (smaller value will allow the model to
+#' more closely approximate a continuous-time Lotka-Volterra)
 #'
 #' @return a data frame containing Jaccard distance, perturbation importance,
 #' mean abundance, standard deviation of abundance over the simulation, and
@@ -38,7 +41,7 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     } else {
         nstars <- as.vector(as.matrix(popname))
     }
-    r0s <- (-mat)%*%nstars
+    r0s <- (-mat) %*% nstars
 
     rmat <- matrix(r0s, S, simtime)
     ##add external forcing
@@ -46,7 +49,7 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
 
     ## This is the workhorse of the function.
     ## It actually carries out the simulation.
-    ns <- discreteLV(rmat, mat, nstars, deltat = deltat, simtime)
+    ns <- discreteLV_C(rmat, mat, nstars, deltat, simtime)
     
     extinctionthreshold <- 10e-06
     nfinals <- ns[,dim(ns)[2]]
@@ -66,7 +69,7 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     for(i in 1:S){
         nfinalstmp <- nfinals
         nfinalstmp[i] <- 0
-        rmNs <- discreteLV(rmat2, mat, nfinalstmp, deltat = deltat, jaccardSimtime)
+        rmNs <- discreteLV_C(rmat2, mat, nfinalstmp, deltat, jaccardSimtime)
         rmNs[rmNs < extinctionthreshold] <- 0
         rmMus[,i] <- apply(rmNs[,burnIn:jaccardSimtime], 1, mean)
 

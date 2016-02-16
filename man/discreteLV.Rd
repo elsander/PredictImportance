@@ -7,7 +7,7 @@
 discreteLV(rmat, alphas, n0s, deltat, simtime)
 }
 \arguments{
-\item{rmat}{a matrix with S (number of species) rows and simtime/deltat
+\item{rmat}{a matrix with S (number of species) rows and simtime
 cols containing the growth rates at each time step (potentially
 perturbed at each time step)}
 

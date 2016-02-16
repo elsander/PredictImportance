@@ -79,8 +79,8 @@ BuildMPN <- function(S = 50, C = .1, GapProb = .25){
         ## (3) there are no species that both eat each other
         ## if these are met, return the network
         if (abs(sum(M) - DesiredL) < CutOff){
-            g <- graph.adjacency(M)
-            if (is.connected(g, "weak")){
+            g <- igraph::graph.adjacency(M)
+            if (igraph::is.connected(g, "weak")){
                 M2 <- M + t(M)
                 ##if there are any M2 == 2, then there is
                 ##at least one pair of spp that both eat
