@@ -4,6 +4,21 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
 
+//' Simulate a discrete-time Lotka-Volterra time series in C
+//'
+//' Simulate discrete-time Lotka-Volterra population dynamics
+//' with perturbed growth rates
+//'
+//' @param rmat a matrix with S (number of species) rows and simtime
+//' cols containing the growth rates at each time step (potentially
+//' perturbed at each time step) 
+//' @param alphas an S by S matrix of per capita interaction strengths
+//' @param n0s a vector of length S containing species abundances
+//' @param deltat the size of the time step
+//' @param simtime the total number of time steps to simulate
+//'
+//' @return an S by simtime matrix of species abundances at each timestep
+//' @export
 // [[Rcpp::export]]
 NumericMatrix discreteLV_C(NumericMatrix r_,
                            NumericMatrix alphas_,

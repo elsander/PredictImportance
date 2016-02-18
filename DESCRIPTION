@@ -9,8 +9,8 @@ Description: Contains all code used to simulate community dynamics and study
 	     importance correlates in Wootton et al. (in prep).
 License: GPL (>=3) | file LICENSE
 LazyData: true
-Imports: Rcpp
 Depends: R,
+         Rcpp,
 	 ggplot2,   
 	 igraph,
 	 lme4,
