@@ -49,8 +49,9 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
 
     ## This is the workhorse of the function.
     ## It actually carries out the simulation.
-    ns <- discreteLV_C(rmat, mat, nstars, deltat, simtime)
-    
+    ## ns <- discreteLV_C(rmat, mat, nstars, deltat, simtime)
+    ns <- discreteLV(rmat, mat, nstars, deltat, simtime)
+
     extinctionthreshold <- 10e-06
     nfinals <- ns[,dim(ns)[2]]
     nfinals[nfinals < extinctionthreshold] <- 0

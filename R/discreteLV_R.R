@@ -19,14 +19,19 @@ discreteLV <- function(rmat, alphas, n0s, deltat, simtime){
     S <- dim(alphas)[1]
     ## we only want to keep each integer time point
     ns <- matrix(0, S, simtime)
+    ## ntmps <- matrix(0, S, simtime/deltat + 10)
+    ## k <- 1
     ## we keep intermediate time step abundances here
     ntmp <- n0s
     for(i in 1:simtime){
         ns[,i] <- ntmp
         for(j in seq(i, i+1, by = deltat)){
             ntmp <- ntmp*exp(deltat*(rmat[,i] + alphas %*% ntmp))
+            ## ntmps[,k] <- ntmp
+            ## k <- k+1
         }
     }
+    ## browser()
     ns[,ncol(i)] <- ntmp
     return(ns)
 }

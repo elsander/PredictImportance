@@ -1,13 +1,21 @@
-## Utility functions for handling path and file names
-##
-## hasTrailingSlash: Check for a trailing slash '/' in a path string and
-##
-## stripFileExtension: strip the final file extension (.txt, etc.)
-## from a given file name
-##
+#' Utility functions for handling path and file names
+#'
+#' hasTrailingSlash checks for a trailing slash '/' in a path string,
+#' addTrailingSlash adds a slash if it isn't already present, and
+#' stripFileExtension strips the final file extension (.txt, etc.)
+#' from a given file name
+#'
+#' @param dirpath a string containing a path to a directory
+#' @param filepath a string containing a path to a file
+#'
+#' @return hasTrailiingSlash returns a boolean flag. addTrailingSlash
+#' returns the directory path, and stripFileExtension returns the file
+#' with the extension removed.
+#' 
+#' @export
 
-hasTrailingSlash <- function(mystring){
-    slashTF <- grep('/$', mystring, perl = TRUE)
+hasTrailingSlash <- function(dirpath){
+    slashTF <- grep('/$', dirpath, perl = TRUE)
 
     ## test if a path string ends in '/'
     if(length(slashTF) > 0){
@@ -17,11 +25,11 @@ hasTrailingSlash <- function(mystring){
     }
 }
 
-addTrailingSlash <- function(mystring){
-    if(hasTrailingSlash(mystring)){
-        return(mystring)
+addTrailingSlash <- function(dirpath){
+    if(hasTrailingSlash(dirpath)){
+        return(dirpath)
     } else {
-        return(paste0(mystring, '/'))
+        return(paste0(dirpath, '/'))
     }
 }
 

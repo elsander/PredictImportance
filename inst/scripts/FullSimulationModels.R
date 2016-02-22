@@ -1,4 +1,4 @@
-SimulatedViolins <- function(pathToResults){
+ModelViolins <- function(pathToResults){
     ## rename pathToResults to be shorter
     p <- pathToResults
     if(!hasTrailingSlash(p)){
@@ -153,5 +153,5 @@ FullSimulationModels <- function(){
     print('MPN45 complete')
 
     print('Generating violin plots from all results')
-    SimulatedViolins('Results')
+    ModelViolins('Results')
 }
