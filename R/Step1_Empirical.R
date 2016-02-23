@@ -25,6 +25,7 @@ Step1_Empirical_Parameterization <- function(web,
                                              foldname = web,
                                              path = 'Data',
                                              nruns = 30,
+                                             Immigration = TRUE,
                                              Exponential = FALSE,
                                              seed = NULL){
     ## for reproducibility
@@ -46,17 +47,34 @@ Step1_Empirical_Parameterization <- function(web,
     system(paste0('mkdir ', path, foldname))
     filebase <- paste0(path, foldname, '/', web)
     for(j in 1:nruns){
-        outfile1 <- paste0(filebase, '-web-', 1, '-run-', j, '-mat.txt')
-        outfile2 <- paste0(filebase, '-web-', 1, '-run-', j, '-pop.txt')
+        outfile1 <- paste0(filebase, '-web-', 1, '-run-', j, '-immigration-',
+                           Immigration*1, '-mat.txt')
+        outfile2 <- paste0(filebase, '-web-', 1, '-run-', j, '-immigration-',
+                           Immigration*1, '-pop.txt')
+        outfile3 <- paste0(filebase, '-web-', 1, '-run-', j, '-immigration-',
+                           Immigration*1, '-imm.txt')
         ## parameterize
         ###################################
         if(Exponential){
             out <- ExponentialParam(as.matrix(get(web)))
         } else {
-            out <- LognormalParam(as.matrix(get(web)))
+            out <- LognormalParam(as.matrix(get(web)), Immigration = Immigration)
         }
         ###################################
+
+        ## draw immigration values
+        S <- length(out$Pop)
+        if(Immigration){
+            r0s <- (-out$Mat) %*% out$Pop
+            ## draw imm from an exponential that is scaled by the r0 values
+            lambda <- mean(abs(r0s))/10
+            imm <- rexp(S, rate = lambda)
+        } else {
+            imm <- rep(0, S)
+        }
+        
         write.table(out$Mat, outfile1, row.names = FALSE, col.names = FALSE)
         write.table(out$Pop, outfile2, row.names = FALSE, col.names = FALSE)
+        write.table(imm, outfile3, row.names = FALSE, col.names = FALSE)
     }
 }

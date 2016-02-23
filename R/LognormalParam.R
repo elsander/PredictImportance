@@ -16,7 +16,7 @@
 #'
 #' @export
 
-LognormalParam <- function(Adj){
+LognormalParam <- function(Adj, Immigration = TRUE){
     ##truncated lognormal distribution after 5 sd's from the mean
     ##the exp(.5) is the distribution mean
     cutoff <- sqrt(exp(1)*(exp(1)-1))*5 + exp(.5)
@@ -41,14 +41,19 @@ LognormalParam <- function(Adj){
         Nstar[Nstar > cutoff] <- rlnorm(length(Nstar[Nstar > cutoff]))
     }
 
-    ##get leading eigenvalue
-    leadingev <- max(Re(eigen(Adj, only.values = TRUE)$values))
-    ## if the system is unstable (positive leading eigenvalue),
-    ## increase density-dependence on the diagonal to enforce
-    ## stability.
-    if(leadingev > 0){
-        Adj <- Adj + diag(-1.1*leadingev, S, S)
+    if(Immigration == 0){
+        ##If we aren't using immigration to stabilize, we need to stabilize
+        ## with the diagonal entries
+        
+        ##get leading eigenvalue
+        leadingev <- max(Re(eigen(Adj, only.values = TRUE)$values))
+        ## if the system is unstable (positive leading eigenvalue),
+        ## increase density-dependence on the diagonal to enforce
+        ## stability.
+        if(leadingev > 0){
+            Adj <- Adj + diag(-1.1*leadingev, S, S)
+        }
     }
-
+        
     return(list(Mat = Adj, Pop = Nstar))
 }

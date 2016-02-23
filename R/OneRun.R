@@ -9,6 +9,7 @@
 #'
 #' @param matname path to parameterized network to be simulated
 #' @param popname path to vector of equilibrium abundances for the network
+#' @param immname path to vector of immigration rates for species in the network
 #' @param simtime number of time steps to simulate
 #' @param deltat step size for simulation (smaller value will allow the model to
 #' more closely approximate a continuous-time Lotka-Volterra)
@@ -19,7 +20,7 @@
 #'
 #' @export
 
-OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
+OneRun <- function(matname, popname, immname, simtime = 1000, deltat = .001){
     ## hardcoded jaccard simtime and burn-in
     jaccardSimtime <- 500
     burnIn <- 300
@@ -34,6 +35,14 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     S <- dim(mat)[1]
     mat <- t(mat) ##to make it consistent with how we're simulating it
 
+    ##immigration vector
+    ##read in, if applicable
+    if(is.character(immname)){
+        imm <- as.vector(as.matrix(read.table(immname, header = FALSE)))
+    } else {
+        imm <- as.vector(as.matrix(immname))
+    }
+
     ##equilibrium ns
     ##read in, if applicable
     if(is.character(popname)){
@@ -41,16 +50,17 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     } else {
         nstars <- as.vector(as.matrix(popname))
     }
+
     r0s <- (-mat) %*% nstars
 
     rmat <- matrix(r0s, S, simtime)
     ##add external forcing
-    rmat <- rmat + matrix(rnorm(S*simtime, mean = 0, sd = .01), S, simtime)
+    ## rmat <- rmat + matrix(rnorm(S*simtime, mean = 0, sd = .01), S, simtime)
 
     ## This is the workhorse of the function.
     ## It actually carries out the simulation.
-    ## ns <- discreteLV_C(rmat, mat, nstars, deltat, simtime)
-    ns <- discreteLV(rmat, mat, nstars, deltat, simtime)
+    ns <- discreteLV_C(rmat, mat, nstars, imm, deltat, simtime)
+    ## ns <- discreteLV(rmat, mat, nstars, deltat, simtime)
 
     extinctionthreshold <- 10e-06
     nfinals <- ns[,dim(ns)[2]]
@@ -70,7 +80,7 @@ OneRun <- function(matname, popname, simtime = 1000, deltat = .001){
     for(i in 1:S){
         nfinalstmp <- nstars
         nfinalstmp[i] <- 0
-        rmNs <- discreteLV_C(rmat2, mat, nfinalstmp, deltat, jaccardSimtime)
+        rmNs <- discreteLV_C(rmat2, mat, nfinalstmp, imm, deltat, jaccardSimtime)
         rmNs[rmNs < extinctionthreshold] <- 0
         rmMus[,i] <- apply(rmNs[,burnIn:jaccardSimtime], 1, mean)
 

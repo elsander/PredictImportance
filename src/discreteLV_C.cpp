@@ -23,12 +23,14 @@ using namespace Rcpp;
 NumericMatrix discreteLV_C(NumericMatrix r_,
                            NumericMatrix alphas_,
                            NumericVector ntmp_,
+                           NumericVector Is_,
                            double deltat,
                            int simtime){
     // copy the data into armadillo structures
     arma::mat r = Rcpp::as<arma::mat> (r_);
     arma::mat alphas = Rcpp::as<arma::mat>(alphas_);
     arma::colvec ntmp = Rcpp::as<arma::colvec>(ntmp_);
+    arma::colvec Is = Rcpp::as<arma::colvec>(Is_);
 
     int S = ntmp.size();
     NumericMatrix ns(S, simtime);
@@ -53,7 +55,7 @@ NumericMatrix discreteLV_C(NumericMatrix r_,
             
             // calculate next abundance for each species
             // The % operator is for elementwise multiplication
-            tmp = deltatvec % (r.col(i) + alphas * ntmp);
+            tmp = deltatvec % (r.col(i) + (alphas * ntmp) + (Is / ntmp));
             // apply a lambda to exponentiate each element
             // should have similar performance to a regular for loop
             // The ampersand is there because we MUST pass by
@@ -62,6 +64,7 @@ NumericMatrix discreteLV_C(NumericMatrix r_,
                 tmp(k) = exp(tmp(k));
             }
             ntmp = ntmp % tmp;
+            // ntmp = ntmp + tmp % ntmp;
         }
     }
 

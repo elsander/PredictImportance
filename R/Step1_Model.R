@@ -31,6 +31,7 @@ Step1_Generate_Networks <- function(web = 'Cascade',
                                     GapProb = .25,
                                     nwebs = 30,
                                     nruns = 30,
+                                    Immigration = TRUE,
                                     seed = NULL
                                     ){
 
@@ -66,12 +67,29 @@ Step1_Generate_Networks <- function(web = 'Cascade',
         print(i)
         for(j in 1:nruns){
             outfile1 <- paste0(path, foldname, '/', foldname,
-                               '-web-', i, '-run-', j, '-mat.txt')
+                               '-web-', i, '-run-', j, '-immigration-',
+                               Immigration*1, '-mat.txt')
             outfile2 <- paste0(path, foldname, '/', foldname,
-                               '-web-', i, '-run-', j, '-pop.txt')
-            out <- LognormalParam(Adj)
+                               '-web-', i, '-run-', j, '-immigration-',
+                               Immigration*1, '-pop.txt')
+            outfile3 <- paste0(path, foldname, '/', foldname,
+                               '-web-', i, '-run-', j, '-immigration-',
+                               Immigration*1, '-imm.txt')
+            out <- LognormalParam(Adj, Immigration = Immigration)
+
+            ## draw immigration values
+            if(Immigration){
+                r0s <- (-out$Mat) %*% out$Pop
+                ## draw imm from an exponential that is scaled by the r0 values
+                lambda <- mean(abs(r0s))/10
+                imm <- rexp(S, rate = lambda)
+            } else {
+                imm <- rep(0, S)
+            }
+            
             write.table(out$Mat, outfile1, row.names = FALSE, col.names = FALSE)
             write.table(out$Pop, outfile2, row.names = FALSE, col.names = FALSE)
+            write.table(imm, outfile3, row.names = FALSE, col.names = FALSE)
         }
     }
 }
