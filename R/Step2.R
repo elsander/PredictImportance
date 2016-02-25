@@ -34,8 +34,9 @@ Step2_Discrete_LV <- function(path, seed = NULL){
     for(i in 1:length(matsplit)){
         print(i)
         matfile <- paste0(path, matsplit[i], 'mat.txt')
-        out <- OneRun(matfile,
-                      paste0(path, matsplit[i], 'pop.txt'))
+        popfile <- paste0(path, matsplit[i], 'pop.txt')
+        immfile <- paste0(path, matsplit[i], 'imm.txt')
+        out <- OneRun(matfile, popfile, immfile)
         
         ## transform variables
         out$LogOddsJaccard <- log(out$Jaccard/(1-out$Jaccard))
