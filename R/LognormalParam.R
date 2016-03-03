@@ -35,25 +35,49 @@ LognormalParam <- function(Adj, Immigration = TRUE){
     ##predators don't benefit as much as prey are harmed
     Adj <- Adj + t(Adj)*rnorm(S*S, .2, .01)*-1
 
-    Nstar <- rlnorm(S)
-    while(sum((Nstar > cutoff)*1) > 0){
-        ##redraw values past the cutoff to make this a truncated lognormal
-        Nstar[Nstar > cutoff] <- rlnorm(length(Nstar[Nstar > cutoff]))
-    }
+    ##get leading eigenvalue
+    leadingev <- max(Re(eigen(Adj, only.values = TRUE)$values))
 
     if(Immigration == 0){
         ##If we aren't using immigration to stabilize, we need to stabilize
         ## with the diagonal entries
         
-        ##get leading eigenvalue
-        leadingev <- max(Re(eigen(Adj, only.values = TRUE)$values))
         ## if the system is unstable (positive leading eigenvalue),
         ## increase density-dependence on the diagonal to enforce
         ## stability.
         if(leadingev > 0){
             Adj <- Adj + diag(-1.1*leadingev, S, S)
         }
+        Imm <- rep(0, S)
+        ## draw equilibrium Ns
+        Nstar <- rlnorm(S)
+        while(sum((Nstar > cutoff)*1) > 0){
+            ##redraw values past the cutoff to make this a truncated lognormal
+            Nstar[Nstar > cutoff] <- rlnorm(length(Nstar[Nstar > cutoff]))
+        }
+    } else {
+        ## Draw equilibrium Ns with immigration constraint
+        ## cutoff for Nstars can be tightened based on max leading eigenvalue of Adj
+        evalCutoff <- 1/leadingev
+        if(evalCutoff < cutoff){
+            cutoff <- evalCutoff
+        }
+        Nstar <- rlnorm(S)
+        while(sum((Nstar > cutoff)*1) > 0){
+            ##redraw values past the cutoff to make this a truncated lognormal
+            Nstar[Nstar > cutoff] <- rlnorm(length(Nstar[Nstar > cutoff]))
+        }
+
+        ## Draw immigration terms
+        Imm <- rep(0, S)
+        for(i in 1:S){
+            Imm[i] <- runif(1, leadingev*Nstar[i]^2, Nstar[i])
+        }
+
+        ## back calculate and make sure the result is stable
+        ImmNsq <- Imm/(Nstar^2)
+        AdjTmp <- Adj - diag(ImmNsq)
     }
         
-    return(list(Mat = Adj, Pop = Nstar))
+    return(list(Mat = Adj, Pop = Nstar, Imm = Imm))
 }

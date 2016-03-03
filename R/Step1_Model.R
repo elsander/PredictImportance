@@ -77,19 +77,9 @@ Step1_Generate_Networks <- function(web = 'Cascade',
                                Immigration*1, '-imm.txt')
             out <- LognormalParam(Adj, Immigration = Immigration)
 
-            ## draw immigration values
-            if(Immigration){
-                r0s <- (-out$Mat) %*% out$Pop
-                ## draw imm from an exponential that is scaled by the r0 values
-                lambda <- mean(abs(r0s))/10
-                imm <- rexp(S, rate = lambda)
-            } else {
-                imm <- rep(0, S)
-            }
-            
             write.table(out$Mat, outfile1, row.names = FALSE, col.names = FALSE)
             write.table(out$Pop, outfile2, row.names = FALSE, col.names = FALSE)
-            write.table(imm, outfile3, row.names = FALSE, col.names = FALSE)
+            write.table(out$Imm, outfile3, row.names = FALSE, col.names = FALSE)
         }
     }
 }

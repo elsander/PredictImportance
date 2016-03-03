@@ -51,11 +51,13 @@ OneRun <- function(matname, popname, immname, simtime = 1000, deltat = .001){
         nstars <- as.vector(as.matrix(popname))
     }
 
-    r0s <- (-mat) %*% nstars
-
+    ## back-calculate r0s based on equilibrium ns and immigration rates
+    ## r0s <- (-mat) %*% nstars
+    r0s <- (-mat) %*% nstars - (imm/nstars)
+    
     rmat <- matrix(r0s, S, simtime)
     ##add external forcing
-    ## rmat <- rmat + matrix(rnorm(S*simtime, mean = 0, sd = .01), S, simtime)
+    rmat <- rmat + matrix(rnorm(S*simtime, mean = 0, sd = .01), S, simtime)
 
     ## This is the workhorse of the function.
     ## It actually carries out the simulation.
@@ -94,9 +96,11 @@ OneRun <- function(matname, popname, immname, simtime = 1000, deltat = .001){
     adj <- (mat > 0)*1
     degs <- rowSums(adj) + colSums(adj)
 
-    matinv <- solve(diag(nstars, S, S)%*%mat)
+    ##calculate press perturbation importance
+    ## matinv <- solve(diag(nstars, S, S)%*%mat)
+    matinv <- solve(diag(imm/(nstars^2)) - mat)
     presspert <- colSums(abs(matinv))
-
+    
     outdata <- data.frame(Jaccard = jaccardvals,
                           Perturbation = presspert,
                           Mean = mus,

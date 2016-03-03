@@ -11,7 +11,6 @@
 #' @param path Path where data are kept. 'foldname' will be created as a folder
 #'   here if it does not already exist
 #' @param nruns Number of parameterizations to be generated.
-#' @param Exponential TEMPORARY
 #' @param seed Random seed for reproducibility
 #'
 #' @return This function does not return an object, but it writes parameterized
@@ -26,7 +25,6 @@ Step1_Empirical_Parameterization <- function(web,
                                              path = 'Data',
                                              nruns = 30,
                                              Immigration = TRUE,
-                                             Exponential = FALSE,
                                              seed = NULL){
     ## for reproducibility
     set.seed(seed)
@@ -38,12 +36,6 @@ Step1_Empirical_Parameterization <- function(web,
         path <- paste0(path, '/')
     }
 
-    ###################################
-    if(Exponential){
-        foldname <- paste0(web, '-', 'exp')
-    }
-    ###################################
-    
     system(paste0('mkdir ', path, foldname))
     filebase <- paste0(path, foldname, '/', web)
     for(j in 1:nruns){
@@ -54,27 +46,10 @@ Step1_Empirical_Parameterization <- function(web,
         outfile3 <- paste0(filebase, '-web-', 1, '-run-', j, '-immigration-',
                            Immigration*1, '-imm.txt')
         ## parameterize
-        ###################################
-        if(Exponential){
-            out <- ExponentialParam(as.matrix(get(web)))
-        } else {
-            out <- LognormalParam(as.matrix(get(web)), Immigration = Immigration)
-        }
-        ###################################
-
-        ## draw immigration values
-        S <- length(out$Pop)
-        if(Immigration){
-            r0s <- (-out$Mat) %*% out$Pop
-            ## draw imm from an exponential that is scaled by the r0 values
-            lambda <- mean(abs(r0s))/10
-            imm <- rexp(S, rate = lambda)
-        } else {
-            imm <- rep(0, S)
-        }
+        out <- LognormalParam(as.matrix(get(web)), Immigration = Immigration)
         
         write.table(out$Mat, outfile1, row.names = FALSE, col.names = FALSE)
         write.table(out$Pop, outfile2, row.names = FALSE, col.names = FALSE)
-        write.table(imm, outfile3, row.names = FALSE, col.names = FALSE)
+        write.table(out$Imm, outfile3, row.names = FALSE, col.names = FALSE)
     }
 }
