@@ -8,6 +8,7 @@
 #' perturbed at each time step) 
 #' @param alphas an S by S matrix of per capita interaction strengths
 #' @param n0s a vector of length S containing species abundances
+#' @param Is immigration rates
 #' @param deltat the size of the time step
 #' @param simtime the total number of time steps to simulate
 #'
@@ -15,7 +16,7 @@
 #'
 #' @export
 
-discreteLV <- function(rmat, alphas, n0s, deltat, simtime){
+discreteLV <- function(rmat, alphas, n0s, Is, deltat, simtime){
     S <- dim(alphas)[1]
     ## we only want to keep each integer time point
     ns <- matrix(0, S, simtime)
@@ -23,10 +24,11 @@ discreteLV <- function(rmat, alphas, n0s, deltat, simtime){
     ## k <- 1
     ## we keep intermediate time step abundances here
     ntmp <- n0s
+    browser()
     for(i in 1:simtime){
         ns[,i] <- ntmp
         for(j in seq(i, i+1, by = deltat)){
-            ntmp <- ntmp*exp(deltat*(rmat[,i] + alphas %*% ntmp))
+            ntmp <- ntmp*exp(deltat*(rmat[,i] + alphas %*% ntmp + Is/ntmp))
             ## ntmps[,k] <- ntmp
             ## k <- k+1
         }

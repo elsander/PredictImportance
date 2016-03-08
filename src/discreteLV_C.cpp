@@ -39,6 +39,7 @@ NumericMatrix discreteLV_C(NumericMatrix r_,
     // used for matrix calculations
     arma::colvec deltatvec(S);
     arma::colvec tmp(S);
+    arma::colvec Imm_ntmp(S);
 
     for(i=0; i<S; i++){
         deltatvec(i) = deltat;
@@ -56,10 +57,6 @@ NumericMatrix discreteLV_C(NumericMatrix r_,
             // calculate next abundance for each species
             // The % operator is for elementwise multiplication
             tmp = deltatvec % (r.col(i) + (alphas * ntmp) + (Is / ntmp));
-            // apply a lambda to exponentiate each element
-            // should have similar performance to a regular for loop
-            // The ampersand is there because we MUST pass by
-            // reference
             for(k=0; k<S; k++){
                 tmp(k) = exp(tmp(k));
             }

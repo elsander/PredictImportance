@@ -74,22 +74,29 @@ OneRun <- function(matname, popname, immname, simtime = 1000, deltat = .001){
     sigmas <- apply(ns[,(simtime/2):simtime], 1, sd)
 
     ##remove each species to calculate effect on community
-    rmMus <- matrix(0, S, S)
     jaccardvals <- rep(0, S)
     ##external forcing for jaccard distance calculation
     rmat2 <- matrix(r0s, S, jaccardSimtime) +
         matrix(rnorm(S*jaccardSimtime, mean = 0, sd = .01), S, jaccardSimtime)
     for(i in 1:S){
-        nfinalstmp <- nstars
-        nfinalstmp[i] <- 0
-        rmNs <- discreteLV_C(rmat2, mat, nfinalstmp, imm, deltat, jaccardSimtime)
+        ## remove a species from all of the r/n/alpha/imm data so that it
+        ## goes globally extinct, for jaccard calculations
+        rmat2Tmp <- rmat2[-i,]
+        matTmp <- mat[-i,-i]
+        nstarsTmp <- nstars[-i]
+        immTmp <- imm[-i]
+        
+        rmNs <- discreteLV_C(rmat2Tmp, matTmp, nstarsTmp, immTmp, deltat, jaccardSimtime)
+        ## rmNs <- discreteLV(rmat2Tmp, matTmp, nstarsTmp, immTmp, deltat, jaccardSimtime)
         rmNs[rmNs < extinctionthreshold] <- 0
-        rmMus[,i] <- apply(rmNs[,burnIn:jaccardSimtime], 1, mean)
+        rmMus <- apply(rmNs[,burnIn:jaccardSimtime], 1, mean)
 
         ##calculate Jaccard distance
-        tmpmu <- mus
-        tmpmu[i] <- 0
-        jaccardvals[i] <- jaccard(tmpmu, rmMus[,i])
+        ## we don't need to re-include the removed species
+        ## since it won't contribute to the Jaccard distance
+        tmpmu <- mus[-i]
+        ## tmpmu[i] <- 0
+        jaccardvals[i] <- jaccard(tmpmu, rmMus)
     }
 
     ##calculate degree
