@@ -14,6 +14,8 @@
 #' @param GapProb Probability of a gap in a niche. Only used if web == 'MPN'.
 #' @param nwebs Number of random web structures to be generated.
 #' @param nruns Number of parameterizations to be generated.
+#' @param Immigration flag marking whether to generate networks under an
+#' immigration model or closed model. Defaults to TRUE.
 #' @param seed Random seed for reproducibility
 #'
 #' @return This function does not return an object, but it writes parameterized

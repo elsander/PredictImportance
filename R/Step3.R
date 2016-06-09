@@ -34,23 +34,23 @@ Step3_Hierarchical_Model <- function(datafname,
         PathToResults <- paste0(PathToResults, '/')
     }
     PathToResults <- paste0(PathToResults, webname, '/')
-    
+
     ## standardize variables
-    toStandardize <- c('LogCV', 'LogDegree', 'LogCloseness',
+    toStandardize <- c('ResidualVar', 'LogDegree', 'LogCloseness',
                        'LogEigenvector', 'TrophicLevel')
     allData[,toStandardize] <- apply(allData[,toStandardize],
                                      2, function(x) return((x-mean(x))/sd(x)))
     
     if(empirical == TRUE){
         model.jacc <- lme4::lmer(LogOddsJaccard ~
-                                 (-1+LogCV|Run) +
+                                 (-1+ResidualVar|Run) +
                                  LogDegree +
                                  LogCloseness +
                                  LogEigenvector +
                                  TrophicLevel, data = allData)
         
         model.pert <- lme4::lmer(LogPerturbation ~
-                                 (-1+LogCV|Run) +
+                                 (-1+ResidualVar|Run) +
                                  LogDegree +
                                  LogCloseness +
                                  LogEigenvector +
@@ -73,14 +73,14 @@ Step3_Hierarchical_Model <- function(datafname,
                              '-HierarchicalModel-Perturbation.RData'))
     } else {
         model.jacc <- lme4::lmer(LogOddsJaccard ~
-                                 (-1+LogCV|Web:Run) +
+                                 (-1+ResidualVar|Web:Run) +
                                  (-1+LogDegree|Web) +
                                  (-1+LogCloseness|Web) +
                                  (-1+LogEigenvector|Web) +
                                  (-1+TrophicLevel|Web), data = allData)
 
         model.pert <- lme4::lmer(LogPerturbation ~
-                                 (-1+LogCV|Web:Run) +
+                                 (-1+ResidualVar|Web:Run) +
                                  (-1+LogDegree|Web) +
                                  (-1+LogCloseness|Web) +
                                  (-1+LogEigenvector|Web) +

@@ -31,12 +31,21 @@ Step2_Discrete_LV <- function(path, seed = NULL){
     filebase <- strsplit(matsplit[1], 'web.*$', perl = TRUE)[[1]][1]
     outfname <- paste0(path, filebase, 'AllData.csv')
 
+    fconn <- file('skippedRuns.txt', 'a')
     for(i in 1:length(matsplit)){
         print(i)
         matfile <- paste0(path, matsplit[i], 'mat.txt')
         popfile <- paste0(path, matsplit[i], 'pop.txt')
         immfile <- paste0(path, matsplit[i], 'imm.txt')
         out <- OneRun(matfile, popfile, immfile)
+
+        resid <- MeanSigmaResiduals(out$Mean, out$Sigma)
+        ## if it's not significant, note the file name but don't
+        ## include it in the AllData file. It gets thrown out.
+        if(is.null(resid)){
+            writeLines(matfile, fconn)
+            next
+        }
         
         ## transform variables
         out$LogOddsJaccard <- log(out$Jaccard/(1-out$Jaccard))
@@ -56,12 +65,14 @@ Step2_Discrete_LV <- function(path, seed = NULL){
         allData <- data.frame(Web = rep(web, nrow(out)),
                               Run = rep(run, nrow(out)),
                               out[,vars],
-                              centralities)
+                              centralities,
+                              ResidualVar = resid)
         ## append to file
         write.table(allData, outfname, append = TRUE,
                     row.names = FALSE, quote = FALSE,
                     col.names = !file.exists(outfname),
                     sep = ',')
     }
+    close(fconn)
     return(outfname)
 }

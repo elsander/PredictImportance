@@ -11,6 +11,8 @@
 #' @param path Path where data are kept. 'foldname' will be created as a folder
 #'   here if it does not already exist
 #' @param nruns Number of parameterizations to be generated.
+#' @param Immigration flag marking whether to generate networks under an
+#' immigration model or closed model. Defaults to TRUE.
 #' @param seed Random seed for reproducibility
 #'
 #' @return This function does not return an object, but it writes parameterized
@@ -28,7 +30,6 @@ Step1_Empirical_Parameterization <- function(web,
                                              seed = NULL){
     ## for reproducibility
     set.seed(seed)
-
     data(list = web)
 
     ## standardize path format

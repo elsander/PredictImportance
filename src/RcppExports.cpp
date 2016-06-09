@@ -7,18 +7,18 @@
 using namespace Rcpp;
 
 // discreteLV_C
-NumericMatrix discreteLV_C(NumericMatrix r_, NumericMatrix alphas_, NumericVector ntmp_, NumericVector Is_, double deltat, int simtime);
-RcppExport SEXP predictimportance_discreteLV_C(SEXP r_SEXP, SEXP alphas_SEXP, SEXP ntmp_SEXP, SEXP Is_SEXP, SEXP deltatSEXP, SEXP simtimeSEXP) {
+NumericMatrix discreteLV_C(NumericMatrix r_, NumericMatrix alphas_, NumericVector n0s_, NumericVector Is_, double deltat, int simtime);
+RcppExport SEXP predictimportance_discreteLV_C(SEXP r_SEXP, SEXP alphas_SEXP, SEXP n0s_SEXP, SEXP Is_SEXP, SEXP deltatSEXP, SEXP simtimeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericMatrix >::type r_(r_SEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type alphas_(alphas_SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type ntmp_(ntmp_SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n0s_(n0s_SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type Is_(Is_SEXP);
     Rcpp::traits::input_parameter< double >::type deltat(deltatSEXP);
     Rcpp::traits::input_parameter< int >::type simtime(simtimeSEXP);
-    __result = Rcpp::wrap(discreteLV_C(r_, alphas_, ntmp_, Is_, deltat, simtime));
+    __result = Rcpp::wrap(discreteLV_C(r_, alphas_, n0s_, Is_, deltat, simtime));
     return __result;
 END_RCPP
 }

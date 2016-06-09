@@ -7,8 +7,10 @@
 #' Run all data simulation and analysis steps for a given model or
 #' empirical web(s). This may take a while!
 #'
-#' @param path path to where Data and Results folders are or should be created
-#' 
+#' @param path the path to the folder in which to put data and results
+#' @param Immigration flag marking whether to generate networks under an
+#' immigration model or closed model. Defaults to TRUE.
+#'
 #' @rdname runScripts
 #' @param model food web model used to construct the network: options are
 #'   'Cascade', 'Niche', 'MPN25', 'MPN35', and 'MPN45'.
@@ -20,7 +22,7 @@
 #'
 #' @export
 
-runScriptsModel <- function(model = 'Cascade', path = './'){
+runScriptsModel <- function(model = 'Cascade', path = './', Immigration = TRUE){
     old <- getwd()
     on.exit(setwd(old), add = TRUE)
     
@@ -45,7 +47,7 @@ runScriptsModel <- function(model = 'Cascade', path = './'){
         model2 <- model
     }
         
-    Step1_Generate_Networks(web = model2, GapProb = GapProb)
+    Step1_Generate_Networks(web = model2, GapProb = GapProb, Immigration = Immigration)
     fname <- Step2_Discrete_LV(path = paste0('Data/', model))
     Step3_Hierarchical_Model(fname, empirical = FALSE)
 }
@@ -65,7 +67,7 @@ runScriptsModel <- function(model = 'Cascade', path = './'){
 #'
 #' @export
 
-runScriptsEmpirical <- function(web = 'All', path = './'){
+runScriptsEmpirical <- function(web = 'All', path = './', Immigration = TRUE){
     setwd(path)
     system('mkdir Data')
     system('mkdir Results')
@@ -83,7 +85,7 @@ runScriptsEmpirical <- function(web = 'All', path = './'){
     ## run the three steps for each network in the list
     for(net in nets){
         system(paste0('mkdir Data/', net))
-        Step1_Empirical_Parameterization(net)
+        Step1_Empirical_Parameterization(net, Immigration = Immigration)
         out <- Step2_Discrete_LV(paste0('Data/',net))
         Step3_Hierarchical_Model(out)
     }

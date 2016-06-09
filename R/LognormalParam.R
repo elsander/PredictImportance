@@ -6,6 +6,8 @@
 #' mean.
 #'
 #' @param Adj An adjacency matrix
+#' @param Immigration A flag for whether we are parameterizing a system with
+#' immigration or a closed system. Defaults to TRUE.
 #'
 #' @return a list with elements Mat (a matrix of interaction strengths) and
 #'   Pop (a vector of equilibrium population sizes).
@@ -73,11 +75,6 @@ LognormalParam <- function(Adj, Immigration = TRUE){
         for(i in 1:S){
             Imm[i] <- runif(1, leadingev*Nstar[i]^2, Nstar[i])
         }
-
-        ## back calculate and make sure the result is stable
-        ImmNsq <- Imm/(Nstar^2)
-        AdjTmp <- Adj - diag(ImmNsq)
     }
-        
     return(list(Mat = Adj, Pop = Nstar, Imm = Imm))
 }
