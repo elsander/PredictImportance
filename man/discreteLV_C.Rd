@@ -7,19 +7,19 @@
 discreteLV_C(r_, alphas_, n0s_, Is_, deltat, simtime)
 }
 \arguments{
-\item{deltat}{the size of the time step}
-
-\item{simtime}{the total number of time steps to simulate}
-
-\item{rmat}{a matrix with S (number of species) rows and simtime
+\item{r_}{a matrix with S (number of species) rows and simtime
 cols containing the growth rates at each time step (potentially
 perturbed at each time step)}
 
-\item{alphas}{an S by S matrix of per capita interaction strengths}
+\item{alphas_}{an S by S matrix of per capita interaction strengths}
 
-\item{n0s}{a vector of length S containing species abundances}
+\item{n0s_}{a vector of length S containing species abundances}
 
-\item{Is}{a vector of length S containing immigration rates}
+\item{Is_}{a vector of length S containing immigration rates}
+
+\item{deltat}{the size of the time step}
+
+\item{simtime}{the total number of time steps to simulate}
 }
 \value{
 an S by simtime matrix of species abundances at each timestep
