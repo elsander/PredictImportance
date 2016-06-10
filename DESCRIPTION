@@ -11,10 +11,7 @@ Description: Contains all code used to simulate community dynamics and study
 License: GPL (>=3) | file LICENSE
 LazyData: true
 Depends:
-    Rcpp,
     ggplot2,
     igraph,
     lme4,
-    broom
-LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 5.0.1
