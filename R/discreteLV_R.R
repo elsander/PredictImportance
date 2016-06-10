@@ -24,7 +24,6 @@ discreteLV <- function(rmat, alphas, n0s, Is, deltat, simtime){
     ## k <- 1
     ## we keep intermediate time step abundances here
     ntmp <- n0s
-    browser()
     for(i in 1:simtime){
         ns[,i] <- ntmp
         for(j in seq(i, i+1, by = deltat)){
@@ -33,7 +32,6 @@ discreteLV <- function(rmat, alphas, n0s, Is, deltat, simtime){
             ## k <- k+1
         }
     }
-    ## browser()
     ns[,ncol(i)] <- ntmp
     return(ns)
 }

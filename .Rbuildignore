@@ -1,2 +1,4 @@
 ^\.git/objects/.*
 \.gitignore$
+^.*\.Rproj$
+^\.Rproj\.user$

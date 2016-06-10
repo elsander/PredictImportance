@@ -23,8 +23,12 @@
 OneRun <- function(matname, popname, immname, simtime = 1000, deltat = .001){
     ## hardcoded jaccard simtime and burn-in
     jaccardSimtime <- 500
-    burnIn <- 300
-    
+    if(simtime > 300){
+        burnIn <- 300
+    } else {
+      burnIn <- 0
+    }
+
     ##matrix of alphas
     ## read in, if applicable
     if(is.character(matname)){
@@ -54,15 +58,20 @@ OneRun <- function(matname, popname, immname, simtime = 1000, deltat = .001){
     ## back-calculate r0s based on equilibrium ns and immigration rates
     ## r0s <- (-mat) %*% nstars
     r0s <- (-mat) %*% nstars - (imm/nstars)
-    
+
     rmat <- matrix(r0s, S, simtime)
     ##add external forcing
     rmat <- rmat + matrix(rnorm(S*simtime, mean = 0, sd = .01), S, simtime)
 
     ## This is the workhorse of the function.
     ## It actually carries out the simulation.
-    ns <- discreteLV_C(rmat, mat, nstars, imm, deltat, simtime)
-    ## ns <- discreteLV(rmat, mat, nstars, deltat, simtime)
+    ## ns <- discreteLV_C(rmat, mat, nstars, imm, deltat, simtime)
+    ns <- discreteLV(rmat = rmat,
+                     alphas = mat,
+                     n0s = nstars,
+                     Is = imm,
+                     deltat = deltat,
+                     simtime = simtime)
 
     extinctionthreshold <- 10e-06
     nfinals <- ns[,dim(ns)[2]]
@@ -85,9 +94,14 @@ OneRun <- function(matname, popname, immname, simtime = 1000, deltat = .001){
         matTmp <- mat[-i,-i]
         nstarsTmp <- nstars[-i]
         immTmp <- imm[-i]
-        
-        rmNs <- discreteLV_C(rmat2Tmp, matTmp, nstarsTmp, immTmp, deltat, jaccardSimtime)
-        ## rmNs <- discreteLV(rmat2Tmp, matTmp, nstarsTmp, immTmp, deltat, jaccardSimtime)
+
+        ## rmNs <- discreteLV_C(rmat2Tmp, matTmp, nstarsTmp, immTmp, deltat, jaccardSimtime)
+        rmNs <- discreteLV(rmat = rmat2Tmp,
+                           alphas = matTmp,
+                           n0s = nstarsTmp,
+                           Is = immTmp,
+                           deltat = deltat,
+                           simtime = jaccardSimtime)
         rmNs[rmNs < extinctionthreshold] <- 0
         rmMus <- apply(rmNs[,burnIn:jaccardSimtime], 1, mean)
 
@@ -107,7 +121,7 @@ OneRun <- function(matname, popname, immname, simtime = 1000, deltat = .001){
     ## matinv <- solve(diag(nstars, S, S)%*%mat)
     matinv <- solve(diag(imm/(nstars^2)) - mat)
     presspert <- colSums(abs(matinv))
-    
+
     outdata <- data.frame(Jaccard = jaccardvals,
                           Perturbation = presspert,
                           Mean = mus,
