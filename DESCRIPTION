@@ -1,17 +1,20 @@
 Package: predictimportance
 Type: Package
-Title: Generate Networks, Simulate Abundance Data, and Analyze Importance Correlates
+Title: Generate Networks, Simulate Abundance Data, and Analyze Importance
+    Correlates
 Version: 1.0.0
 Date: 2015-05-05
 Author: Elizabeth Sander and Gyuri Barabas
 Maintainer: Elizabeth Sander <esander@uchicago.edu>
-Description: Contains all code used to simulate community dynamics and study 
-	     importance correlates in Wootton et al. (in prep).
+Description: Contains all code used to simulate community dynamics and study
+    importance correlates in Wootton et al. (in prep).
 License: GPL (>=3) | file LICENSE
 LazyData: true
-Depends: R,
-         Rcpp,
-	 ggplot2,   
-	 igraph,
-	 lme4,
+Depends:
+    R,
+    Rcpp,
+    ggplot2,
+    igraph,
+    lme4,
 LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 5.0.1
