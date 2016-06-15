@@ -40,13 +40,13 @@ Step2_Discrete_LV <- function(path, seed = NULL){
         out <- OneRun(matfile, popfile, immfile)
 
         resid <- MeanSigmaResiduals(out$Mean, out$Sigma)
+            
         ## if it's not significant, note the file name but don't
         ## include it in the AllData file. It gets thrown out.
         if(is.null(resid)){
             writeLines(matfile, fconn)
             next
         }
-        
         ## transform variables
         out$LogOddsJaccard <- log(out$Jaccard/(1-out$Jaccard))
         out$LogPerturbation <- log(out$Perturbation)

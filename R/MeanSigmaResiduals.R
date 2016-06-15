@@ -17,12 +17,24 @@
 #' @export
 
 MeanSigmaResiduals <- function(Mean, Sigma){
-    fit <- lm(log(Sigma) ~ log(Mean))
-    ## pval <- broom::tidy(fit)$p.value[2]
-    pval <- summary(fit)$coefficients[2,4]
-    if(pval > .05){
-        return(NULL)
+    lsig <- log(Sigma)
+    lmean <- log(Mean)
+    ## if there is a population crash during the simulation,
+    ## there will be 0s in Mean/Sigma (and infinities in the log).
+    ## These 0s will skew results anyway, so throw these out of the
+    ## model.
+    if(all(is.finite(lsig)) && all(is.finite(lmean))){
+        fit <- lm(log(Sigma) ~ log(Mean))
+        ## pval <- broom::tidy(fit)$p.value[2]
+        pval <- summary(fit)$coefficients[2,4]
+        ## if the relationship isn't significant, throw out
+        ## this set of results
+        if(pval <= .05){
+            return(as.vector(as.matrix(fit$residuals)))
+        } else {
+            return(NULL)
+        }
     } else {
-        return(as.vector(as.matrix(fit$residuals)))
+        return(NULL)
     }
 }
