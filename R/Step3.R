@@ -43,34 +43,43 @@ Step3_Hierarchical_Model <- function(datafname,
     
     if(empirical == TRUE){
         model.jacc <- lme4::lmer(LogOddsJaccard ~
-                                 (-1+ResidualVar|Run) +
-                                 LogDegree +
-                                 LogCloseness +
-                                 LogEigenvector +
-                                 TrophicLevel, data = allData)
+                                     (-1+ResidualVar|Run) +
+                                     LogDegree +
+                                     LogCloseness +
+                                     LogEigenvector +
+                                     TrophicLevel, data = allData)
+        model.jacc.varrm <- lm(LogOddsJaccard ~
+                                    LogDegree +
+                                    LogCloseness +
+                                    LogEigenvector +
+                                    TrophicLevel, data = allData)
+        model.jacc.degrm <- lme4::lmer(LogOddsJaccard ~
+                                            (-1+ResidualVar|Run) +
+                                            LogCloseness +
+                                            LogEigenvector +
+                                            TrophicLevel, data = allData)
+        model.jacc.closerm <- lme4::lmer(LogOddsJaccard ~
+                                              (-1+ResidualVar|Run) +
+                                              LogDegree +
+                                              LogEigenvector +
+                                              TrophicLevel, data = allData)
+        model.jacc.eigrm <- lme4::lmer(LogOddsJaccard ~
+                                            (-1+ResidualVar|Run) +
+                                            LogDegree +
+                                            LogCloseness +
+                                            TrophicLevel, data = allData)
+        model.jacc.tlrm <- lme4::lmer(LogOddsJaccard ~
+                                           (-1+ResidualVar|Run) +
+                                           LogDegree +
+                                           LogCloseness +
+                                           LogEigenvector, data = allData)
         
-        model.pert <- lme4::lmer(LogPerturbation ~
-                                 (-1+ResidualVar|Run) +
-                                 LogDegree +
-                                 LogCloseness +
-                                 LogEigenvector +
-                                 TrophicLevel, data = allData)
         write.table(coef(model.jacc)$Run, paste0(PathToResults, webname,
                                                  '-AllCoefficients-Removal.txt'),
                     row.names = FALSE, quote = FALSE)
         write.table(fixef(model.jacc), paste0(PathToResults, webname,
                                               '-FixedCoefficients-Removal.txt'),
                     col.names = FALSE, quote = FALSE)
-        save(model.jacc, file = paste0(PathToResults, webname,
-                             '-HierarchicalModel-Removal.RData'))
-        write.table(coef(model.pert)$Run, paste0(PathToResults, webname,
-                                                 '-AllCoefficients-Perturbation.txt'),
-                    row.names = FALSE, quote = FALSE)
-        write.table(fixef(model.pert), paste0(PathToResults, webname,
-                                              '-FixedCoefficients-Perturbation.txt'),
-                    col.names = FALSE, quote = FALSE)
-        save(model.pert, file = paste0(PathToResults, webname,
-                             '-HierarchicalModel-Perturbation.RData'))
     } else {
         model.jacc <- lme4::lmer(LogOddsJaccard ~
                                  (-1+ResidualVar|Web:Run) +
@@ -78,28 +87,44 @@ Step3_Hierarchical_Model <- function(datafname,
                                  (-1+LogCloseness|Web) +
                                  (-1+LogEigenvector|Web) +
                                  (-1+TrophicLevel|Web), data = allData)
-
-        model.pert <- lme4::lmer(LogPerturbation ~
-                                 (-1+ResidualVar|Web:Run) +
+        model.jacc.varrm <- lme4::lmer(LogOddsJaccard ~
                                  (-1+LogDegree|Web) +
                                  (-1+LogCloseness|Web) +
                                  (-1+LogEigenvector|Web) +
                                  (-1+TrophicLevel|Web), data = allData)
+        model.jacc.degrm <- lme4::lmer(LogOddsJaccard ~
+                                 (-1+ResidualVar|Web:Run) +
+                                 (-1+LogCloseness|Web) +
+                                 (-1+LogEigenvector|Web) +
+                                 (-1+TrophicLevel|Web), data = allData)
+        model.jacc.closerm <- lme4::lmer(LogOddsJaccard ~
+                                 (-1+ResidualVar|Web:Run) +
+                                 (-1+LogDegree|Web) +
+                                 (-1+LogEigenvector|Web) +
+                                 (-1+TrophicLevel|Web), data = allData)
+        model.jacc.eigrm <- lme4::lmer(LogOddsJaccard ~
+                                 (-1+ResidualVar|Web:Run) +
+                                 (-1+LogDegree|Web) +
+                                 (-1+LogCloseness|Web) +
+                                 (-1+TrophicLevel|Web), data = allData)
+        model.jacc.tlrm <- lme4::lmer(LogOddsJaccard ~
+                                 (-1+ResidualVar|Web:Run) +
+                                 (-1+LogDegree|Web) +
+                                 (-1+LogCloseness|Web) +
+                                 (-1+LogEigenvector|Web), data = allData)
+
         write.table(coef(model.jacc)$`Web:Run`, paste0(PathToResults, webname,
                                                        '-AllCoefficients-Removal.txt'),
                     quote = FALSE)
         write.table(coef(model.jacc)$Web, paste0(PathToResults, webname,
                                                  '-FixedCoefficients-Removal.txt'),
                     quote = FALSE)
-        save(model.jacc, file = paste0(PathToResults, webname,
-                             '-HierarchicalModel-Removal.RData'))
-        write.table(coef(model.pert)$`Web:Run`, paste0(PathToResults, webname,
-                                                       '-AllCoefficients-Perturbation.txt'),
-                    quote = FALSE)
-        write.table(coef(model.pert)$Web, paste0(PathToResults, webname,
-                                                 '-FixedCoefficients-Perturbation.txt'),
-                    quote = FALSE)
-        save(model.pert, file = paste0(PathToResults, webname,
-                             '-HierarchicalModel-Perturbation.RData'))
     }
+    save(model.jacc,
+         model.jacc.varrm,
+         model.jacc.degrm,
+         model.jacc.closerm,
+         model.jacc.eigrm,
+         model.jacc.tlrm,
+         file = paste0(PathToResults, webname, '-HierarchicalModel-Removal.RData'))
 }
