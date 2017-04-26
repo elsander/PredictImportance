@@ -20,6 +20,8 @@ Step3_Hierarchical_Model <- function(datafname,
     allData <- read.csv(datafname)
     allData$Run <- as.factor(allData$Run)
     allData$Web <- as.factor(allData$Web)
+    ## convert abundance to log abundance
+    allData$LogAbundance <- log(allData$Mean)
 
     ## extract web name
     webname <- strsplit(datafname, '/')[[1]]
@@ -37,42 +39,54 @@ Step3_Hierarchical_Model <- function(datafname,
 
     ## standardize variables
     toStandardize <- c('ResidualVar', 'LogDegree', 'LogCloseness',
-                       'LogEigenvector', 'TrophicLevel')
+                       'LogEigenvector', 'LogAbundance', 'TrophicLevel')
     allData[,toStandardize] <- apply(allData[,toStandardize],
                                      2, function(x) return((x-mean(x))/sd(x)))
     
     if(empirical == TRUE){
         model.jacc <- lme4::lmer(LogOddsJaccard ~
                                      (-1+ResidualVar|Run) +
+                                     (-1+LogAbundance|Run) +
                                      LogDegree +
                                      LogCloseness +
                                      LogEigenvector +
                                      TrophicLevel, data = allData)
-        model.jacc.varrm <- lm(LogOddsJaccard ~
-                                    LogDegree +
-                                    LogCloseness +
-                                    LogEigenvector +
-                                    TrophicLevel, data = allData)
-        model.jacc.degrm <- lme4::lmer(LogOddsJaccard ~
-                                            (-1+ResidualVar|Run) +
-                                            LogCloseness +
-                                            LogEigenvector +
-                                            TrophicLevel, data = allData)
-        model.jacc.closerm <- lme4::lmer(LogOddsJaccard ~
-                                              (-1+ResidualVar|Run) +
-                                              LogDegree +
-                                              LogEigenvector +
-                                              TrophicLevel, data = allData)
-        model.jacc.eigrm <- lme4::lmer(LogOddsJaccard ~
-                                            (-1+ResidualVar|Run) +
-                                            LogDegree +
-                                            LogCloseness +
-                                            TrophicLevel, data = allData)
-        model.jacc.tlrm <- lme4::lmer(LogOddsJaccard ~
-                                           (-1+ResidualVar|Run) +
+        model.jacc.varrm <- lme4::lmer(LogOddsJaccard ~
+                                           (-1+LogAbundance|Run) +
                                            LogDegree +
                                            LogCloseness +
-                                           LogEigenvector, data = allData)
+                                           LogEigenvector +
+                                           TrophicLevel, data = allData)
+        model.jacc.abundrm <- lme4::lmer(LogOddsJaccard ~
+                                             (-1+ResidualVar|Run) +
+                                             LogDegree +
+                                             LogCloseness +
+                                             LogEigenvector +
+                                             TrophicLevel, data = allData)
+        model.jacc.degrm <- lme4::lmer(LogOddsJaccard ~
+                                           (-1+ResidualVar|Run) +
+                                           (-1+LogAbundance|Run) +
+                                           LogCloseness +
+                                           LogEigenvector +
+                                           TrophicLevel, data = allData)
+        model.jacc.closerm <- lme4::lmer(LogOddsJaccard ~
+                                             (-1+ResidualVar|Run) +
+                                             (-1+LogAbundance|Run) +
+                                             LogDegree +
+                                             LogEigenvector +
+                                             TrophicLevel, data = allData)
+        model.jacc.eigrm <- lme4::lmer(LogOddsJaccard ~
+                                           (-1+ResidualVar|Run) +
+                                           (-1+LogAbundance|Run) +
+                                           LogDegree +
+                                           LogCloseness +
+                                           TrophicLevel, data = allData)
+        model.jacc.tlrm <- lme4::lmer(LogOddsJaccard ~
+                                          (-1+ResidualVar|Run) +
+                                          (-1+LogAbundance|Run) +
+                                          LogDegree +
+                                          LogCloseness +
+                                          LogEigenvector, data = allData)
         
         write.table(coef(model.jacc)$Run, paste0(PathToResults, webname,
                                                  '-AllCoefficients-Removal.txt'),
@@ -82,36 +96,48 @@ Step3_Hierarchical_Model <- function(datafname,
                     col.names = FALSE, quote = FALSE)
     } else {
         model.jacc <- lme4::lmer(LogOddsJaccard ~
-                                 (-1+ResidualVar|Web:Run) +
-                                 (-1+LogDegree|Web) +
-                                 (-1+LogCloseness|Web) +
-                                 (-1+LogEigenvector|Web) +
-                                 (-1+TrophicLevel|Web), data = allData)
+                                     (-1+ResidualVar|Web:Run) +
+                                     (-1+LogAbundance|Web:Run) +
+                                     (-1+LogDegree|Web) +
+                                     (-1+LogCloseness|Web) +
+                                     (-1+LogEigenvector|Web) +
+                                     (-1+TrophicLevel|Web), data = allData)
         model.jacc.varrm <- lme4::lmer(LogOddsJaccard ~
-                                 (-1+LogDegree|Web) +
-                                 (-1+LogCloseness|Web) +
-                                 (-1+LogEigenvector|Web) +
-                                 (-1+TrophicLevel|Web), data = allData)
+                                           (-1+LogAbundance|Web:Run) +
+                                           (-1+LogDegree|Web) +
+                                           (-1+LogCloseness|Web) +
+                                           (-1+LogEigenvector|Web) +
+                                           (-1+TrophicLevel|Web), data = allData)
+        model.jacc.abundrm <- lme4::lmer(LogOddsJaccard ~
+                                     (-1+ResidualVar|Web:Run) +
+                                     (-1+LogDegree|Web) +
+                                     (-1+LogCloseness|Web) +
+                                     (-1+LogEigenvector|Web) +
+                                     (-1+TrophicLevel|Web), data = allData)
         model.jacc.degrm <- lme4::lmer(LogOddsJaccard ~
-                                 (-1+ResidualVar|Web:Run) +
-                                 (-1+LogCloseness|Web) +
-                                 (-1+LogEigenvector|Web) +
-                                 (-1+TrophicLevel|Web), data = allData)
+                                           (-1+ResidualVar|Web:Run) +
+                                           (-1+LogAbundance|Web:Run) +
+                                           (-1+LogCloseness|Web) +
+                                           (-1+LogEigenvector|Web) +
+                                           (-1+TrophicLevel|Web), data = allData)
         model.jacc.closerm <- lme4::lmer(LogOddsJaccard ~
-                                 (-1+ResidualVar|Web:Run) +
-                                 (-1+LogDegree|Web) +
-                                 (-1+LogEigenvector|Web) +
-                                 (-1+TrophicLevel|Web), data = allData)
+                                             (-1+ResidualVar|Web:Run) +
+                                             (-1+LogAbundance|Web:Run) +
+                                             (-1+LogDegree|Web) +
+                                             (-1+LogEigenvector|Web) +
+                                             (-1+TrophicLevel|Web), data = allData)
         model.jacc.eigrm <- lme4::lmer(LogOddsJaccard ~
-                                 (-1+ResidualVar|Web:Run) +
-                                 (-1+LogDegree|Web) +
-                                 (-1+LogCloseness|Web) +
-                                 (-1+TrophicLevel|Web), data = allData)
+                                           (-1+ResidualVar|Web:Run) +
+                                           (-1+LogAbundance|Web:Run) +
+                                           (-1+LogDegree|Web) +
+                                           (-1+LogCloseness|Web) +
+                                           (-1+TrophicLevel|Web), data = allData)
         model.jacc.tlrm <- lme4::lmer(LogOddsJaccard ~
-                                 (-1+ResidualVar|Web:Run) +
-                                 (-1+LogDegree|Web) +
-                                 (-1+LogCloseness|Web) +
-                                 (-1+LogEigenvector|Web), data = allData)
+                                          (-1+ResidualVar|Web:Run) +
+                                          (-1+LogAbundance|Web:Run) +
+                                          (-1+LogDegree|Web) +
+                                          (-1+LogCloseness|Web) +
+                                          (-1+LogEigenvector|Web), data = allData)
 
         write.table(coef(model.jacc)$`Web:Run`, paste0(PathToResults, webname,
                                                        '-AllCoefficients-Removal.txt'),
@@ -122,6 +148,7 @@ Step3_Hierarchical_Model <- function(datafname,
     }
     save(model.jacc,
          model.jacc.varrm,
+         model.jacc.abundrm,
          model.jacc.degrm,
          model.jacc.closerm,
          model.jacc.eigrm,
